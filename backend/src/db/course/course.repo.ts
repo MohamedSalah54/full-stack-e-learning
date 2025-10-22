@@ -9,4 +9,7 @@ export class CourseRepo extends BaseRepo<TCourse> {
   ) {
     super(courseModel);
   }
+    async countByInstructor(instructorId: string): Promise<number> {
+    return this.courseModel.countDocuments({ instructor: instructorId });
+  }
 }

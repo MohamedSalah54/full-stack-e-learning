@@ -1,3 +1,4 @@
+import { CourseModel } from 'src/db/course/course.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto, UpdateCourseDto } from './dto';
 import { TUser } from 'src/db/user/user.model';
@@ -10,12 +11,18 @@ import { Messages } from 'src/common/enum';
 export class CourseService {
   constructor(private readonly courseRepo: CourseRepo) {}
 
+  async countCoursesByInstructor(instructorId: string): Promise<number> {
+    return this.courseRepo.countByInstructor(instructorId);
+  }
+
+
   async create(createCourseDto: CreateCourseDto, user: TUser) {
     const course = await this.courseRepo.create({
       title: createCourseDto.title,
       description: createCourseDto.description,
       thumbnail: createCourseDto.image,
-      instructor: user._id,
+      // instructor: user._id,
+      instructor: new Types.ObjectId(createCourseDto.instructor),
       category: createCourseDto.category,
       level: createCourseDto.level,
       language: createCourseDto.language,
@@ -82,7 +89,7 @@ export class CourseService {
     updateCourseDto: UpdateCourseDto,
   ) {
     const course = await this.courseRepo.findOne({
-      filter: { instructor: user._id, _id: id },
+      filter: { instructor: user._id, _id: new Types.ObjectId(id as any) },
     });
 
     if (!course) throw new NotFoundException(Messages.course.notFound);

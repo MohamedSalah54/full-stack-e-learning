@@ -16,6 +16,9 @@ export class Category {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: Category.name, default: null })
   parentCategory: Types.ObjectId;
+
+    @Prop({ type: String, default: "" }) 
+  iconKey: string;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

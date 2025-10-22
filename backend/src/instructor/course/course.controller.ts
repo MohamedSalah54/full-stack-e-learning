@@ -4,11 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Req,
   UseInterceptors,
-
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Types } from 'mongoose';
@@ -19,12 +19,10 @@ import { CreateCourseDto, UpdateCourseDto } from './dto';
 import { UserRoles } from 'src/common/enum';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
-import { UploadInterceptor } from 'src/common/interceptors/upload.interceptor';
 
 @Controller('course')
 export class CourseController {
-  constructor(private readonly courseService: CourseService
-  ) { }
+  constructor(private readonly courseService: CourseService) {}
 
   @Post()
   // @Auth(UserRoles.INSTRUCTOR)
@@ -39,8 +37,15 @@ export class CourseController {
     };
   }
 
-
-
+  
+  @Get('instructor/:instructorId/count')
+  async getCoursesCountByInstructor(
+    @Param('instructorId') instructorId: string,
+  ) {
+    const count =
+      await this.courseService.countCoursesByInstructor(instructorId);
+    return { success: true, coursesCount: count };
+  }
 
   @Get()
   @Public()
@@ -56,12 +61,13 @@ export class CourseController {
     return { success: true, data: course };
   }
 
-  @Put(':id')
-  // @Auth(UserRoles.INSTRUCTOR)
+  @Patch(':id')
   async update(
     @Param('id') id: Types.ObjectId,
     @Body() updateCourseDto: UpdateCourseDto,
-    @CurrentUser() user: TUser,
+    user: TUser = {
+      _id: new Types.ObjectId('681c8f7be44544808bebbedc'),
+    } as TUser,
   ) {
     const course = await this.courseService.update(id, user, updateCourseDto);
     return { success: true, data: course };

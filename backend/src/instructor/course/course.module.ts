@@ -5,10 +5,11 @@ import { CourseModel } from 'src/db/course/course.model';
 import { CourseRepo } from 'src/db/course/course.repo';
 import { CloudService } from 'src/common/services/cloud/cloudinary';
 import { CertificateModule } from './certificate/certificate.module';
+import { ImageController } from 'src/common/services/cloud/image.controller';
 
 @Module({
-  imports: [CourseModel, CertificateModule],
-  controllers: [CourseController],
+  imports: [CourseModel, CertificateModule,],
+  controllers: [CourseController, ImageController],
   providers: [CourseService, CourseRepo, CloudService],
 })
 export class CourseModule {}

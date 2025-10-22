@@ -1,8 +1,10 @@
 import {
   IsAlphanumeric,
+  IsArray,
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   MinLength,
@@ -69,3 +71,36 @@ export class ResetPasswordDto {
   @IsAlphanumeric()
   newPassword: string;
 }
+
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  qualifications?: string[];
+
+  @IsOptional()
+  @IsObject()
+  profilePicture?: {
+    secure_url: string;
+    public_id: string;
+  };
+}
+

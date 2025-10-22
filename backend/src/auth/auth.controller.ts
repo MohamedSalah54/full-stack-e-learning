@@ -1,13 +1,26 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ConfirmEmailDto,
   ForgetPasswordDto,
   LoginDto as SigninDto,
   ResetPasswordDto,
   SignupDto,
+  UpdateUserDto,
 } from './dto';
 import { AuthService } from './auth.service';
 import { Messages } from 'src/common/enum';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -41,10 +54,10 @@ export class AuthController {
   @Post('/confirm')
   @HttpCode(200)
   async confirmEmail(@Body() confirmEmailDto: ConfirmEmailDto) {
-    const message = await this.authService.confirmEmail(confirmEmailDto);
+    const result = await this.authService.confirmEmail(confirmEmailDto);
     return {
       success: true,
-      message,
+      ...result,
     };
   }
 
@@ -69,4 +82,33 @@ export class AuthController {
       message: Messages.user.updatedSuccessfully,
     };
   }
+
+  @Post('/resend')
+  @HttpCode(200)
+  async resendOtp(@Body() body: { email: string }) {
+    const message = await this.authService.resendOtp(body.email);
+    return {
+      success: true,
+      message,
+    };
+  }
+
+  // get me
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  async getMe(@Req() req: any) {
+    return {
+      success: true,
+      user: req.user,
+    };
+  }
+
+    @Patch('/profile/:id')
+  async updateUser(
+    @Param('id') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.authService.updateUser(userId, updateUserDto);
+  }
+
 }

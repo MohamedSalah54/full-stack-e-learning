@@ -1,6 +1,8 @@
 // components/HeroBannerFixed.tsx
 'use client';
 
+import { hero_fixed_img } from "@/assets";
+import Image from "next/image";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 
 const HeroBannerFixed = () => {
@@ -25,8 +27,8 @@ const HeroBannerFixed = () => {
                 {/* Image on the right */}
                 <div className="w-full flex justify-end">
                     <div className="w-full md:w-[500px] lg:w-[1000px] ml-auto">
-                        <img
-                            src="/hero-fixed.png"
+                        <Image
+                            src={hero_fixed_img}
                             alt="Hero"
                             className="w-full h-auto rounded-md object-contain"
                         />

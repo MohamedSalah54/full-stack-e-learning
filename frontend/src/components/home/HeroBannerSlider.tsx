@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { heroSlides } from "@/constants";
+import Image from "next/image";
 
 const slides = heroSlides;
 
@@ -17,14 +18,21 @@ const HeroBannerSlider = () => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 6000); 
+
+    return () => clearInterval(interval); 
+  }, []);
+
   return (
     <>
       {/* Slider Section */}
       <section className="w-full relative bg-white overflow-hidden">
-        {/* Wrapper for center and padding on large screens */}
         <div className="w-full max-w-screen-xl mx-auto relative h-[300px] sm:h-[400px] md:h-[500px]">
           {slides.map((slide, index) => (
-            <img
+            <Image
               key={index}
               src={slide.image}
               alt="Hero"

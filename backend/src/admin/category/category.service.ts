@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { CategoryRepo } from '../../db/category/category.repo';
 import { TCategory } from '../../db/category/category.model';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
+import { UpdateCategoryDto } from './dto';
 
 interface CreateCategory {
   name: string;
@@ -46,7 +47,25 @@ export class CategoryService {
     }
   }
 
-  async updateOne(id: Types.ObjectId, updateData: { name: string; description?: string }) {
+async findFiltered(search?: string, parentCategory?: string) {
+  const filter: FilterQuery<any> = {};
+
+  if (search) {
+    filter.name = { $regex: search, $options: 'i' };
+  }
+
+  if (parentCategory) {
+    try {
+      filter.parentCategory = new Types.ObjectId(parentCategory);
+    } catch (error) {
+      throw new BadRequestException('Invalid parentCategory id');
+    }
+  }
+
+  return this.categoryRepo.find({ filter });
+}
+
+  async updateOne(id: Types.ObjectId, updateData: UpdateCategoryDto) {
     try {
       const updatedCategory = await this.categoryRepo.updateOne({ filter: { _id: id }, update: updateData });
 
@@ -68,4 +87,57 @@ export class CategoryService {
       throw new BadRequestException('Failed to delete category.');
     }
   }
+
+async getCategoryStats(categoryId: string) {
+  if (!Types.ObjectId.isValid(categoryId)) {
+    throw new BadRequestException('Invalid category ID');
+  }
+
+  const categoryObjectId = new Types.ObjectId(categoryId);
+
+  const categoryWithTracks = await this.categoryRepo.aggregate([
+    { $match: { _id: categoryObjectId, parentCategory: null } },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: '_id',
+        foreignField: 'parentCategory',
+        as: 'tracks'
+      }
+    },
+    { $addFields: { trackCount: { $size: '$tracks' } } },
+    { $project: { name: 1, description: 1, iconKey: 1, trackCount: 1 } }
+  ]);
+
+  const tracksWithCourseCount = await this.categoryRepo.aggregate([
+    { $match: { parentCategory: categoryObjectId } },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: '_id',
+        foreignField: 'category',
+        as: 'courses'
+      }
+    },
+    { $addFields: { courseCount: { $size: '$courses' } } },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        iconKey: 1,
+        parentCategory: 1,
+        courseCount: 1
+      }
+    }
+  ]);
+
+  return {
+    category: categoryWithTracks[0] || null,
+    tracks: tracksWithCourseCount
+  };
+}
+
+
+
+
 }

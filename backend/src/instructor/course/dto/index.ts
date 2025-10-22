@@ -29,8 +29,9 @@ export class CreateCourseDto {
   description: string;
 
   @IsObject()
-  @IsOptional()
+  @IsNotEmpty()
   image: IImage;
+
 
   @Type(() => Types.ObjectId)
   @IsMongoId()
@@ -84,4 +85,17 @@ export class UpdateCourseDto {
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
+
+    @IsObject()
+  @IsOptional()
+  image?: IImage;
+
+  
+  @Type(() => Types.ObjectId)
+  @IsOptional()
+  category?: Types.ObjectId;
+
+    @Type(() => Types.ObjectId)
+  @IsOptional()
+  instructor: string;
 }

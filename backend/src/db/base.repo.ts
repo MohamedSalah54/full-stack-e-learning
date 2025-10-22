@@ -65,13 +65,13 @@ export abstract class BaseRepo<T> {
     projection = {},
     options = {},
     sort = {},
-    limit = 10,
+    // limit = 10,
     skip = 0,
     populate = [],
   }: IFind<T> = {}) {
     const query = this.model.find(filter || {}, projection, options);
     if (sort) query.sort(sort);
-    if (limit) query.limit(limit);
+    // if (limit) query.limit(limit);
     if (skip) query.skip(skip);
     if (populate) query.populate(populate);
     return query;
@@ -90,5 +90,9 @@ export abstract class BaseRepo<T> {
       ...options,
       new: true,
     });
+  }
+
+    aggregate(pipeline: any[]) {
+    return this.model.aggregate(pipeline);
   }
 }
