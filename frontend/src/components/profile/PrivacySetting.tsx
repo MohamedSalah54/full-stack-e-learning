@@ -9,12 +9,11 @@ const PrivacySetting = () => {
 
   return (
     <div className="flex flex-col justify-between h-full">
-      {/* العنوان */}
+      {/* title */}
       <h3 className="font-nunito font-semibold text-[24px] leading-[100%] text-gray-900 opacity-100">
         Account Setting
       </h3>
 
-      {/* الحقول */}
       <div className="grid grid-cols-2 gap-6 mt-4">
         {/* Current Password */}
         <div className="relative">
@@ -24,7 +23,7 @@ const PrivacySetting = () => {
           <input
             type={showCurrent ? "text" : "password"}
             placeholder="Enter current password"
-            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
             type="button"
@@ -43,7 +42,7 @@ const PrivacySetting = () => {
           <input
             type={showNew ? "text" : "password"}
             placeholder="Enter new password"
-            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
             type="button"
@@ -62,7 +61,7 @@ const PrivacySetting = () => {
           <input
             type={showConfirm ? "text" : "password"}
             placeholder="Confirm new password"
-            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
             type="button"
@@ -74,7 +73,7 @@ const PrivacySetting = () => {
         </div>
       </div>
 
-      {/* الزر */}
+      {/* btn */}
       <div className="flex justify-end -mt-12">
         <button
           className="bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 cursor-pointer"
@@ -83,6 +82,7 @@ const PrivacySetting = () => {
             height: "55px",
             borderRadius: "8px",
             padding: "15px 32px",
+            cursor: "pointer",
           }}
         >
           Save Changes

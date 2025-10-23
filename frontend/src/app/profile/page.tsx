@@ -15,11 +15,16 @@ import {
 import { useUserStore } from "@/zustand/store/profileStore";
 import { toast } from "react-toastify";
 import Loader from "@/components/common/Loader";
-import ImageWithLinks from "@/components/instructor/profile/ImageWithLinks";
-import AccountSetting from "@/components/instructor/profile/AccountSetting";
-import NavUser from "@/components/instructor/profile/NavUser";
+import ImageWithLinks from "@/components/profile/ImageWithLinks";
+import AccountSetting from "@/components/profile/AccountSetting";
+import NavUser from "@/components/profile/NavUser";
 
 export default function ProfilePage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
   // const updateUserProfile = useUserStore((state) => state.updateUserProfile);
   // const uploadProfile = useUserStore((state) => state.uploadProfile);
 
@@ -112,12 +117,19 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="mt-10">
-        <ImageWithLinks/>
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+        <Loader loading={loading} />
       </div>
-      <div className="mt-10">
-        <NavUser/>
-      </div>
+      {!loading && (
+        <>
+          <div className="mt-10">
+            <ImageWithLinks />
+          </div>
+          <div className="mt-10">
+            <NavUser />
+          </div>
+        </>
+      )}
     </>
     // <div className="min-h-screen flex items-center justify-center bg-gray-100 py-14 px-6">
     //   <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-xl overflow-hidden shadow-md min-h-[400px]">
@@ -332,5 +344,5 @@ export default function ProfilePage() {
     //     </div>
     //   </div>
     // </div>
-  )
+  );
 }

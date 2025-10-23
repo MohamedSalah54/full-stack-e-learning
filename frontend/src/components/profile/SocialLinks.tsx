@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, Twitter } from "lucide-react";
+import { Facebook, Instagram, Youtube, Twitter, X } from "lucide-react";
 
 export default function SocialLinks() {
   return (
@@ -22,7 +22,7 @@ export default function SocialLinks() {
           </div>
           <input
             type="url"
-            placeholder="Facebook profile link"
+            placeholder="Facebook profile link (Optional)"
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -34,7 +34,7 @@ export default function SocialLinks() {
           </div>
           <input
             type="url"
-            placeholder="Instagram profile link"
+            placeholder="Instagram profile link (Optional)"
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -42,11 +42,11 @@ export default function SocialLinks() {
         {/* X (Twitter) */}
         <div className="flex items-center w-full h-[45px] border border-gray-300 rounded-md overflow-hidden">
           <div className="flex items-center justify-center gap-2 bg-gray-800 text-white px-3 h-full">
-            <Twitter size={20} />
+            <X size={20} />
           </div>
           <input
             type="url"
-            placeholder="X profile link"
+            placeholder="X profile link (Optional)"
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -58,7 +58,7 @@ export default function SocialLinks() {
           </div>
           <input
             type="url"
-            placeholder="YouTube channel link"
+            placeholder="YouTube channel link (Optional)"
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
