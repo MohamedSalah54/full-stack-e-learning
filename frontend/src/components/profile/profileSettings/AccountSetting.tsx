@@ -1,8 +1,8 @@
 import { countryCodes } from "@/constants/countryCodes";
 import { ChevronDown } from "lucide-react";
+import PersonalInfo from "./PersonalInfo";
 import PrivacySetting from "./PrivacySetting";
 import SocialLinks from "./SocialLinks";
-import PersonalInfo from "./PersonalInfo";
 
 const AccountSetting = () => {
   return (
@@ -77,7 +77,7 @@ const AccountSetting = () => {
         </div>
       </div>
 
-      <PersonalInfo />
+      <PersonalInfo/>
       <PrivacySetting />
       <SocialLinks />
     </div>

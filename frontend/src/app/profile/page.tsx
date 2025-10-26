@@ -15,9 +15,9 @@ import {
 import { useUserStore } from "@/zustand/store/profileStore";
 import { toast } from "react-toastify";
 import Loader from "@/components/common/Loader";
-import ImageWithLinks from "@/components/profile/ImageWithLinks";
+import ImageWithLinks from "@/components/profile/fixed/ImageWithLinks";
 import AccountSetting from "@/components/profile/AccountSetting";
-import NavUser from "@/components/profile/NavUser";
+import NavUser from "@/components/profile/fixed/NavUser";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);

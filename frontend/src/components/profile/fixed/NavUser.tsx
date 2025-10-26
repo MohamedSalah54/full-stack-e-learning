@@ -1,9 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import AccountSetting from "./AccountSetting";
+import React, { useEffect, useRef, useState } from "react";
+import AccountSetting from "../profileSettings/AccountSetting";
 import { navUser } from "@/constants";
 import CourseCard from "@/components/common/Card";
 import PaginationComponent from "@/components/organisms/Pagination";
+import Chat from "@/components/profile/chat/Chat";
+import Wishlist from "../favorite/Wishlist";
 
 export default function NavUser() {
   const [activeTab, setActiveTab] = useState("courses");
@@ -17,6 +19,15 @@ export default function NavUser() {
     console.log("Current Page:", page);
   };
 
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (activeTab === "messages" && chatRef.current) {
+      setTimeout(() => {
+        chatRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [activeTab]);
   return (
     <div className="flex flex-col items-center">
       <div
@@ -77,8 +88,21 @@ export default function NavUser() {
           </>
         )}
 
-        {activeTab === "wishlist" && <Wishlist />}
-        {activeTab === "messages" && <Messages />}
+        {activeTab === "wishlist" && (
+          <div className="flex flex-col gap-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Wishlist key={index} />
+            ))}
+          </div>
+        )}
+        {activeTab === "messages" && (
+          <div
+            className="h-screen flex items-center justify-center"
+            ref={chatRef}
+          >
+            <Chat />
+          </div>
+        )}
         {activeTab === "history" && <PurchaseHistory />}
         {activeTab === "settings" && (
           <div className="mb-10">
@@ -91,18 +115,6 @@ export default function NavUser() {
   );
 }
 
-const MyCourses = () => (
-  <div className="text-gray-700 text-center">📘 My Courses Component</div>
-);
-const Wishlist = () => (
-  <div className="text-gray-700 text-center">💖 Wishlist Component</div>
-);
-const Messages = () => (
-  <div className="text-gray-700 text-center">💬 Messages Component</div>
-);
 const PurchaseHistory = () => (
   <div className="text-gray-700 text-center">🧾 Purchase History Component</div>
-);
-const Settings = () => (
-  <div className="text-gray-700 text-center">⚙️ Settings Component</div>
 );
