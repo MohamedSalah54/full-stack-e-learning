@@ -43,7 +43,13 @@ export {
 
 // ICONS 
 import contact_us from '@/assets/icons/contactUs/contact-us.svg';
+import creditCard from '@/assets/icons/purchaseHistory/CreditCard.svg';
+import currencyDollar from '@/assets/icons/purchaseHistory/CurrencyDollarSimple.svg';
+import playCircle from '@/assets/icons/purchaseHistory/PlayCircle.svg'
 
 export {
-    contact_us
+    contact_us,
+    creditCard,
+    currencyDollar,
+    playCircle,
 }

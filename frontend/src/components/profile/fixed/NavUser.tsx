@@ -6,6 +6,7 @@ import CourseCard from "@/components/common/Card";
 import PaginationComponent from "@/components/organisms/Pagination";
 import Chat from "@/components/profile/chat/Chat";
 import Wishlist from "../favorite/Wishlist";
+import PurchaseHistory from '../purchase/PurchaseHistory'
 
 export default function NavUser() {
   const [activeTab, setActiveTab] = useState("courses");
@@ -103,7 +104,7 @@ export default function NavUser() {
             <Chat />
           </div>
         )}
-        {activeTab === "history" && <PurchaseHistory />}
+        {activeTab === "history" && <PurchaseHistory/>}
         {activeTab === "settings" && (
           <div className="mb-10">
             {" "}
@@ -115,6 +116,4 @@ export default function NavUser() {
   );
 }
 
-const PurchaseHistory = () => (
-  <div className="text-gray-700 text-center">🧾 Purchase History Component</div>
-);
+

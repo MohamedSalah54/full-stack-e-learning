@@ -145,3 +145,26 @@ export const navUser = [
   { id: "history", label: "Purchase History" },
   { id: "settings", label: "Settings" },
 ];
+
+export const courses = [
+  {
+    id: 1,
+    title: "Next.js Mastery Course",
+    rating: 4.8,
+    reviews: 210,
+    lessons: 40,
+    students: 500,
+    price: 59,
+    image: "/image.png",
+  },
+  {
+    id: 2,
+    title: "React Advanced Workshop",
+    rating: 4.7,
+    reviews: 180,
+    lessons: 35,
+    students: 420,
+    price: 49,
+    image: "/image.png",
+  },
+];
