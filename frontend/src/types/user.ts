@@ -3,6 +3,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   role: string;
   qualifications?: string[];
   skills?: string[];
@@ -14,8 +15,13 @@ export interface IUser {
   isConfirmed: boolean;
   createdAt: string;
   updatedAt: string;
+  links?: {
+    youtube: string;
+    facebook: string;
+    linkedin: string;
+    x: string;
+  };
 }
-
 
 export interface ISignupPayload {
   firstName: string;
@@ -26,8 +32,8 @@ export interface ISignupPayload {
 }
 
 export enum UserRoles {
-  STUDENT = 'student',
-  INSTRUCTOR = 'instructor',
+  STUDENT = "student",
+  INSTRUCTOR = "instructor",
 }
 
 export interface UpdateUserData {
@@ -36,6 +42,18 @@ export interface UpdateUserData {
   bio?: string;
   skills?: string[];
   qualifications?: string[];
+  email?: string;
+  phone?: string;
+  countryCode?: string;
+  links?: {
+    youtube: string;
+    facebook: string;
+    linkedin: string;
+    x: string;
+  };
+  currentPass: string;
+  newPass: string;
+  confirmPass: string;
   profilePicture?: {
     secure_url: string;
     public_id: string;

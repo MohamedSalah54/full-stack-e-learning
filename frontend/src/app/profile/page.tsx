@@ -16,7 +16,7 @@ import { useUserStore } from "@/zustand/store/profileStore";
 import { toast } from "react-toastify";
 import Loader from "@/components/common/Loader";
 import ImageWithLinks from "@/components/profile/fixed/ImageWithLinks";
-import AccountSetting from "@/components/profile/AccountSetting";
+// import AccountSetting from "@/components/profile/AccountSetting";
 import NavUser from "@/components/profile/fixed/NavUser";
 
 export default function ProfilePage() {
@@ -114,22 +114,28 @@ export default function ProfilePage() {
   //       <Loader loading={loading} />
   //     </div>
   //   );
+  const user = useAuthStore((state) => state.user);
 
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
         <Loader loading={loading} />
       </div>
-      {!loading && (
-        <>
-          <div className="mt-10">
-            <ImageWithLinks />
-          </div>
-          <div className="mt-10">
-            <NavUser />
-          </div>
-        </>
-      )}
+      {!loading &&
+        (user?.role === "student" ? (
+          <>
+            <div className="mt-10">
+              <ImageWithLinks />
+            </div>
+            <div className="mt-10">
+              <NavUser />
+            </div>
+          </>
+        ) : (
+          <>
+            <div>nothing</div>
+          </>
+        ))}
     </>
     // <div className="min-h-screen flex items-center justify-center bg-gray-100 py-14 px-6">
     //   <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-xl overflow-hidden shadow-md min-h-[400px]">

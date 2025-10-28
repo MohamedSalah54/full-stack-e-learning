@@ -1,13 +1,49 @@
 import { create } from "zustand";
 import {  UpdateUserData } from "@/types/user";
-import { updateUser, uploadImage } from "@/axios/services/profile/profile";
+import { changePassword, updateUser, uploadImage } from "@/axios/services/profile/profile";
 
-interface UserState {
+export interface UserState {
   loading: boolean;
   error: string | null;
   updateUserProfile: (id: string, data: UpdateUserData) => Promise<void>;
   uploadProfile: (id: string, file: File) => Promise<{ public_id: string; secure_url: string } | null>; 
 }
+
+interface PasswordState {
+  loading: boolean;
+  message: string | null;
+  error: string | null;
+  changeUserPassword: (
+    userId: string,
+    data: {
+      currentPassword: string;
+      newPassword: string;
+      confirmNewPassword: string;
+    }
+  ) => Promise<void>;
+}
+
+export const usePasswordStore = create<PasswordState>((set) => ({
+  loading: false,
+  message: null,
+  error: null,
+
+  changeUserPassword: async (userId, data) => {
+    set({ loading: true, error: null, message: null });
+    try {
+      const res = await changePassword(userId, data);
+      set({
+        loading: false,
+        message: res.message || "Password updated successfully",
+      });
+    } catch (err: any) {
+      set({
+        loading: false,
+        error: err.message || "Failed to update password",
+      });
+    }
+  },
+}));
 
 
 

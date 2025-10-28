@@ -19,6 +19,7 @@ type AuthState = {
 
   setUser: (user: IUser | null) => void;
 
+
   signup: (data: ISignupPayload) => Promise<any>;
   confirmEmail: (data: { email: string; otp: string }) => Promise<any>;
   login: (data: { email: string; password: string }) => Promise<any>;

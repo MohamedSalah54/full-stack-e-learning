@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   FaFacebookF,
@@ -9,68 +8,27 @@ import {
   FaXTwitter,
   FaPen,
 } from "react-icons/fa6";
-import { useUserStore } from "@/zustand/store/profileStore";
-import { useAuthStore } from "@/zustand/store/authStore";
-import { toast } from "react-toastify";
 import { useCourseStore } from "@/zustand/store/courseStore";
 import { Dock } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
 
 export default function ImageWithLinks() {
   const { count, fetchInstructorCourseCount, loading } = useCourseStore();
-  const uploadProfile = useUserStore((state) => state.uploadProfile);
-  const user = useAuthStore((state) => state.user);
-  const getMe = useAuthStore((state) => state.getMe);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string>("");
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchInstructorCourseCount(user.id);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) {
-      getMe();
-    } else if (user.profilePicture?.secure_url) {
-      setProfileImage(user.profilePicture.secure_url);
-    }
-  }, [user, getMe]);
-
-  const handleEditClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const uploaded = await uploadProfile("", file);
-    if (uploaded) {
-      setProfileImage(uploaded.secure_url);
-
-      const setUser = useAuthStore.getState().setUser;
-      const currentUser = useAuthStore.getState().user;
-
-      if (currentUser) {
-        setUser({
-          ...currentUser,
-          profilePicture: uploaded,
-        });
-      }
-
-      toast.success("Image uploaded successfully ✅");
-    } else {
-      toast.error("Failed to upload image ❌");
-    }
-  };
+  const {
+    user,
+    profileImage,
+    fileInputRef,
+    handleEditClick,
+    handleImageUpload,
+  } = useProfile();
 
   return (
     <div
       className="w-[1320px] h-[187px] flex justify-between items-center mx-auto relative px-8"
       style={{ opacity: 1 }}
     >
-      <div className="flex items-center gap-10 w-[456px] h-[187px] relative">
+      <div className="flex items-center gap-10 w-[656px] h-[187px] relative">
         <div className="relative w-[187px] h-[187px]">
           <Image
             src={profileImage || "/default-avatar.png"}
@@ -86,7 +44,6 @@ export default function ImageWithLinks() {
             <FaPen className="text-sm" />
           </button>
 
-          {/* input empty img*/}
           <input
             type="file"
             accept="image/*"
@@ -96,8 +53,8 @@ export default function ImageWithLinks() {
           />
         </div>
 
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900 capitalize">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-semibold text-gray-900 capitalize w-[400px]">
             {user?.firstName} {user?.lastName}
           </h2>
 

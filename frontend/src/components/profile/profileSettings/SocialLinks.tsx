@@ -1,8 +1,11 @@
-import { Facebook, Instagram, Youtube, Twitter, X } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { Facebook, Youtube, X, Linkedin } from "lucide-react";
 
-export default function SocialLinks() {
+export default function SocialLinks({ register }: any) {
+    const { form, handleChange } = useProfile();
+  
   return (
-    <div
+   <div
       className="rounded-md p-6 flex flex-col gap-6 ml-[-25px]"
       style={{
         width: "866px",
@@ -21,20 +24,22 @@ export default function SocialLinks() {
             <Facebook size={20} />
           </div>
           <input
-            type="url"
+            type="text"
             placeholder="Facebook profile link (Optional)"
+            {...register("links.facebook")}
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
-        {/* Instagram */}
+        {/* LinkedIn */}
         <div className="flex items-center w-full h-[45px] border border-gray-300 rounded-md overflow-hidden">
           <div className="flex items-center justify-center gap-2 bg-gray-800 text-white px-3 h-full">
-            <Instagram size={20} />
+            <Linkedin size={20} />
           </div>
           <input
-            type="url"
-            placeholder="Instagram profile link (Optional)"
+            type="text"
+            placeholder="LinkedIn profile link (Optional)"
+            {...register("links.linkedin")}
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -45,8 +50,9 @@ export default function SocialLinks() {
             <X size={20} />
           </div>
           <input
-            type="url"
+            type="text"
             placeholder="X profile link (Optional)"
+            {...register("links.x")}
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -57,8 +63,9 @@ export default function SocialLinks() {
             <Youtube size={20} />
           </div>
           <input
-            type="url"
+            type="text"
             placeholder="YouTube channel link (Optional)"
+            {...register("links.youtube")}
             className="flex-1 h-full px-3 text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>

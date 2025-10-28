@@ -1,15 +1,21 @@
 "use client";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useAccountForm } from "@/hooks/useAccountForm";
+
 
 const PrivacySetting = () => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  return (
+  const { register, watch, changePass } = useAccountForm();
+
+
+
+  return  (
     <div className="flex flex-col justify-between h-full">
-      {/* title */}
+      {/* Title */}
       <h3 className="font-nunito font-semibold text-[24px] leading-[100%] text-gray-900 opacity-100">
         Account Setting
       </h3>
@@ -23,6 +29,7 @@ const PrivacySetting = () => {
           <input
             type={showCurrent ? "text" : "password"}
             placeholder="Enter current password"
+            {...register("currentPass")}
             className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
@@ -42,6 +49,7 @@ const PrivacySetting = () => {
           <input
             type={showNew ? "text" : "password"}
             placeholder="Enter new password"
+            {...register("newPass")}
             className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
@@ -61,6 +69,7 @@ const PrivacySetting = () => {
           <input
             type={showConfirm ? "text" : "password"}
             placeholder="Confirm new password"
+            {...register("confirmPass")}
             className="w-[400px] h-[45px] border border-gray-300 rounded-md px-3 pr-10 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
           <button
@@ -73,16 +82,17 @@ const PrivacySetting = () => {
         </div>
       </div>
 
-      {/* btn */}
+      {/* Button */}
       <div className="flex justify-end -mt-12">
         <button
-          className="bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 cursor-pointer"
+          onClick={changePass}
+          className="bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 cursor-pointer mt-10"
+          type="button"
           style={{
             width: "169px",
             height: "55px",
             borderRadius: "8px",
             padding: "15px 32px",
-            cursor: "pointer",
           }}
         >
           Save Changes
