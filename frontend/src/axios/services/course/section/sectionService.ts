@@ -1,12 +1,7 @@
 import API from "@/axios/API/api";
+import { Section } from "@/types/section";
 
-export interface Section {
-  _id: string;
-  title: string;
-  description: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+
 
 // جلب كل الـ sections
 export const getSections = async (): Promise<Section[]> => {
@@ -20,4 +15,10 @@ export const createSectionApi = async (
 ): Promise<Section> => {
   const res = await API.post("/section", section);
   return res.data.data;
+};
+
+
+export const getSectionsByCourseApi = async (courseId: string) => {
+  const res = await API.get(`/section/course/${courseId}`);
+  return res.data.data; 
 };

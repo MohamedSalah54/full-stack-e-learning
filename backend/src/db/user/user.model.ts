@@ -8,7 +8,7 @@ export interface IImage {
   folderId: string;
 }
 
-interface IOtp {
+export interface IOtp {
   code: string;
   otpType: string;
   expiresIn: Date;
@@ -29,6 +29,9 @@ export class User {
 
   @Prop({ required: true, unique: true, lowercase: true })
   email: string;
+  
+  @Prop({ required: false, unique: true, match: /^[0-9]{8,15}$/ })
+  phone?: string;
 
   @Prop({ required: true })
   password: string;
@@ -60,6 +63,21 @@ export class User {
     ],
   })
   otp: IOtp[];
+  @Prop({
+    type: {
+      youtube: { type: String, default: '' },
+      facebook: { type: String, default: '' },
+      linkedin: { type: String, default: '' },
+      x: { type: String, default: '' },
+    },
+    default: {},
+  })
+  links?: {
+    youtube?: string;
+    facebook?: string;
+    linkedin?: string;
+    x?: string;
+  };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

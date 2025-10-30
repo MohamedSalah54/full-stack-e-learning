@@ -121,7 +121,7 @@ const AccountSetting = () => {
 
   <div className="flex justify-end -mt-12">
         <button
-          className="bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-900 cursor-pointer mt-10"
+          className="bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-800 cursor-pointer mt-10"
           type="submit"
           style={{
             width: "169px",

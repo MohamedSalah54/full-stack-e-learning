@@ -1,4 +1,3 @@
-import { UserModel } from './../db/user/user.model';
 import {
   BadRequestException,
   ConflictException,
@@ -7,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import {
+  ChangePasswordDto,
   ConfirmEmailDto,
   ForgetPasswordDto,
   LoginDto,
@@ -19,7 +19,12 @@ import { compare, hash } from 'src/common/security/hash';
 import { sendEmail } from 'src/common/utils/email.utils';
 import { JwtService } from '@nestjs/jwt';
 import { generateOTP } from 'src/common/utils/otp.utils';
-import { EMAIL_SUBJECTS, Messages, NotificationType, OTP_TYPE } from 'src/common/enum';
+import {
+  EMAIL_SUBJECTS,
+  Messages,
+  NotificationType,
+  OTP_TYPE,
+} from 'src/common/enum';
 import { TUser } from 'src/db/user/user.model';
 import { NotificationService } from 'src/notification/notification.service';
 import { Model, Types } from 'mongoose';
@@ -31,9 +36,8 @@ export class AuthService {
     private readonly userRepo: UserRepo,
     private readonly jwtService: JwtService,
     private readonly notificationservice: NotificationService,
-  @InjectModel('User') private readonly userModel: Model<TUser>,
-
-  ) { }
+    @InjectModel('User') private readonly userModel: Model<TUser>,
+  ) {}
 
   async signup(signupDto: SignupDto) {
     const user = await this.userRepo.findByEmail(signupDto.email);
@@ -46,7 +50,7 @@ export class AuthService {
       firstName: signupDto.firstName,
       lastName: signupDto.lastName,
       password: hash(signupDto.password),
-      role: signupDto.role ,
+      role: signupDto.role,
 
       otp: [
         {
@@ -82,42 +86,46 @@ export class AuthService {
       { expiresIn: '1y', privateKey: process.env.JWT_SECRET },
     );
 
-    return accessToken;
+    const { password, ...userData } = user.toObject ? user.toObject() : user;
+
+    return {
+      accessToken,
+      user: userData,
+    };
   }
 
-async confirmEmail(confirmEmailDto: ConfirmEmailDto) {
-  const { otp, email } = confirmEmailDto;
+  async confirmEmail(confirmEmailDto: ConfirmEmailDto) {
+    const { otp, email } = confirmEmailDto;
 
-  const user = await this.userRepo.findOne({ filter: { email } });
+    const user = await this.userRepo.findOne({ filter: { email } });
 
-  if (!user) throw new NotFoundException(Messages.user.notFound);
+    if (!user) throw new NotFoundException(Messages.user.notFound);
 
-  const isValidOTP = this.confirmOtp(user, otp, OTP_TYPE.SEND_EMAIL);
-  if (!isValidOTP) throw new BadRequestException('Invalid OTP');
+    const isValidOTP = this.confirmOtp(user, otp, OTP_TYPE.SEND_EMAIL);
+    if (!isValidOTP) throw new BadRequestException('Invalid OTP');
 
-  await user.updateOne({
-    isConfirmed: true,
-    $pull: {
-      otp: { code: user.otp.map((o) => compare(otp, o.code)) },
-    },
-  });
+    await user.updateOne({
+      isConfirmed: true,
+      $pull: {
+        otp: { code: user.otp.map((o) => compare(otp, o.code)) },
+      },
+    });
 
-  const accessToken = this.jwtService.sign(
-    { _id: user._id, email: user.email },
-    { expiresIn: '1y', privateKey: process.env.JWT_SECRET },
-  );
+    const accessToken = this.jwtService.sign(
+      { _id: user._id, email: user.email },
+      { expiresIn: '1y', privateKey: process.env.JWT_SECRET },
+    );
 
-  return {
-    message: Messages.user.emailConfirmed,
-    accessToken,
-    user: {
-      _id: user._id,
-      email: user.email,
-      name: user, 
-    },
-  };
-}
-
+    return {
+      message: Messages.user.emailConfirmed,
+      accessToken,
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user,
+      },
+    };
+  }
 
   private confirmOtp(user: TUser, otp: string, otpType: string) {
     if (
@@ -133,39 +141,35 @@ async confirmEmail(confirmEmailDto: ConfirmEmailDto) {
     return true;
   }
 
+  async resendOtp(email: string) {
+    const user = await this.userRepo.findOne({ filter: { email } });
 
-async resendOtp(email: string) {
-  const user = await this.userRepo.findOne({ filter: { email } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-  if (!user) {
-    throw new NotFoundException("User not found");
-  }
+    const otp = generateOTP();
+    const hashedOtp = await hash(otp, 10);
 
-  const otp = generateOTP();
-  const hashedOtp = await hash(otp, 10);
-
-  await user.updateOne({
-    $push: {
-      otp: {
-        code: hashedOtp,
-        otpType: OTP_TYPE.SEND_EMAIL,
-        expiresIn: new Date(Date.now() + 10 * 60 * 1000), 
+    await user.updateOne({
+      $push: {
+        otp: {
+          code: hashedOtp,
+          otpType: OTP_TYPE.SEND_EMAIL,
+          expiresIn: new Date(Date.now() + 10 * 60 * 1000),
+        },
       },
-    },
-  });
+    });
 
-await sendEmail({
-  from: process.env.EMAIL_FROM,
-  to: email,
-  subject: "Your verification code",
-  text: `Your verification code is ${otp}`,
-});
+    await sendEmail({
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Your verification code',
+      text: `Your verification code is ${otp}`,
+    });
 
-
-  return "OTP resent successfully";
-}
-
-
+    return 'OTP resent successfully';
+  }
 
   async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
     const { email } = forgetPasswordDto;
@@ -208,7 +212,7 @@ await sendEmail({
     if (!user) throw new NotFoundException(Messages.user.notFound);
 
     const otpRecord = user.otp.find(
-      (o) => o.code === otp && o.otpType === OTP_TYPE.FORGET_PASSWORD
+      (o) => o.code === otp && o.otpType === OTP_TYPE.FORGET_PASSWORD,
     );
 
     if (!otpRecord) {
@@ -236,20 +240,36 @@ await sendEmail({
     };
   }
 
-  //update user 
-async updateUser(userId: string, updateData: UpdateUserDto) {
-  const updatedUser = await this.userModel.findByIdAndUpdate(
-    userId,
-    { $set: updateData },
-    { new: true }
-  ).select('-password -otp');
+  async updateUser(userId: string, updateData: UpdateUserDto) {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(userId, { $set: updateData }, { new: true })
+      .select('-password -otp');
 
-  if (!updatedUser) {
-    throw new NotFoundException('User not found');
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return updatedUser;
   }
 
-  return updatedUser;
-}
 
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const { currentPassword, newPassword, confirmNewPassword } = dto;
 
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const isMatch = await compare(currentPassword, user.password);
+    if (!isMatch)
+      throw new UnauthorizedException('Current password is incorrect');
+
+    if (newPassword !== confirmNewPassword)
+      throw new BadRequestException('New passwords do not match');
+
+    const hashedPassword = await hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return { success: true, message: 'Password updated successfully' };
+  }
 }

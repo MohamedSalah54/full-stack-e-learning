@@ -38,6 +38,26 @@ export class SectionService {
     }
   }
 
+  async findByCourseId(courseId: string) {
+  try {
+    const sections = await this.sectionRepo.find({
+      filter: { courseId: new Types.ObjectId(courseId) },
+    });
+
+    if (!sections || sections.length === 0) {
+      throw new NotFoundException('No sections found for this course');
+    }
+
+    return sections;
+  } catch (error) {
+    if (error instanceof NotFoundException) throw error;
+    throw new InternalServerErrorException(
+      'Failed to fetch sections for course: ' + error.message,
+    );
+  }
+}
+
+
   async findAll() {
     try {
       return await this.sectionRepo.find({});

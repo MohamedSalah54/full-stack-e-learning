@@ -2,24 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useCourseStore } from "@/zustand/store/courseStore";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Rating,
-  Box,
-} from "@mui/material";
+
 import { useAuthStore } from "@/zustand/store/authStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { course_instructor, course_student } from "@/assets";
 import Loader from "@/components/common/Loader";
-
-const COURSES_PER_PAGE = 6;
+import CourseCard from "@/components/common/Card";
+import { useEnrollmentStore } from "@/zustand/store/enrollment";
+import { toast } from "react-toastify";
 
 export default function AllCoursesPage() {
+  const { createEnrollment, removeEnrollment, enrollments,getUserEnrollments } = useEnrollmentStore();
+
   const [loading, setLoading] = useState(true);
+  const COURSES_PER_PAGE = 8;
 
   const { courses, error, getCourses } = useCourseStore();
   const [startIndex, setStartIndex] = useState(0);
@@ -38,6 +35,13 @@ export default function AllCoursesPage() {
     user?.role === "student"
       ? "Access a curated catalog of professional courses designed to enhance your skills and support your career growth."
       : "Create, organize, and monitor your courses with advanced tools designed to help you reach and engage learners effectively.";
+
+        useEffect(() => {
+    if (user?.id) {
+      getUserEnrollments(user.id);
+    }
+  }, [user?.id]); 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +70,7 @@ export default function AllCoursesPage() {
     startIndex,
     startIndex + COURSES_PER_PAGE
   );
+
 
   return (
     <>
@@ -106,72 +111,52 @@ export default function AllCoursesPage() {
 
             {/* الكروت */}
             {visibleCourses.length > 0 ? (
-              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {visibleCourses.map((course) => (
-                  <Card
-                    key={course._id}
-                    className="shadow-lg rounded-xl overflow-hidden transition-transform duration-300 cursor-pointer"
-                  >
-                    <CardMedia
-                      component="img"
-                      height="180"
-                      image={course.thumbnail?.secure_url}
-                      alt={course.title}
-                    />
-                    <CardContent className="flex flex-col gap-3">
-                      {/* العنوان */}
-                      <Typography variant="h6" className="font-bold">
-                        {course.title}
-                      </Typography>
+                  <CourseCard
+          key={course._id}
+          image={course.thumbnail?.secure_url || "/image.png"}
+          title={course.title}
+          rating={course.rating || 4.9}
+          category={course.category.name}
+          instructor={
+            course.instructor
+              ? `${course.instructor.firstName?.[0]?.toUpperCase() || ""}${course.instructor.firstName?.slice(1) || ""} ${
+                  course.instructor.lastName
+                    ? course.instructor.lastName[0]?.toUpperCase() + course.instructor.lastName.slice(1)
+                    : ""
+                }`
+              : ""
+          }
+          level={course.level}
+          language={course.language}
+          reviews={course.rating || 0}
+          description={course.description}
+          lessons={course.lessonsCount || 0}
+          students={course.studentsCount || 0}
+          price={course.price}
+          originalPrice={course.originalPrice}
+          onEnroll={async () => {
+            if (!user?.id) return toast("Please log in first");
 
-                      {/* الوصف */}
-                      <Typography variant="body2" className="text-gray-600">
-                        {course.description}
-                      </Typography>
+            try {
+              const existing = enrollments.find((e) => e.courseId._id === course._id);
 
-                      {/* الريتنج */}
-                      <Box display="flex" alignItems="center">
-                        <Rating value={course.rating} readOnly />
-                        <Typography
-                          variant="body2"
-                          className="ml-2 text-gray-500"
-                        >
-                          ({course.rating})
-                        </Typography>
-                      </Box>
-
-                      {/* الإنستراكتور */}
-                      <Typography
-                        variant="body2"
-                        className="text-gray-700 font-medium"
-                      >
-                        👨‍🏫 Instructor:{" "}
-                        {course.instructor?.firstName
-                          ? course.instructor.firstName
-                              .charAt(0)
-                              .toUpperCase() +
-                            course.instructor.firstName.slice(1)
-                          : ""}{" "}
-                        {course.instructor?.lastName
-                          ? course.instructor.lastName.charAt(0).toUpperCase() +
-                            course.instructor.lastName.slice(1)
-                          : ""}
-                      </Typography>
-
-                      {/* المستوى واللغة */}
-                      <Typography variant="body2" className="text-gray-500">
-                        Level: {course.level} | Language: {course.language}
-                      </Typography>
-
-                      {/* السعر */}
-                      <Typography
-                        variant="h6"
-                        className="text-green-600 font-bold"
-                      >
-                        ${course.price}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+              if (existing) {
+                await removeEnrollment(existing._id);
+                await getUserEnrollments(user.id);
+                toast.success("Unenrolled successfully!");
+              } else {
+                await createEnrollment(user.id, course._id);
+                await getUserEnrollments(user.id);
+                toast.success("Enrolled successfully!");
+              }
+            } catch (error: any) {
+              toast.error(error.response?.data?.message || "Enrollment action failed");
+            }
+          }}
+          isEnrolled={enrollments.some((e) => e.courseId._id === course._id)}
+        />
                 ))}
               </div>
             ) : (

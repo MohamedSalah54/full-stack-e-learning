@@ -16,6 +16,7 @@ import {
   ResetPasswordDto,
   SignupDto,
   UpdateUserDto,
+  ChangePasswordDto,
 } from './dto';
 import { AuthService } from './auth.service';
 import { Messages } from 'src/common/enum';
@@ -26,7 +27,6 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // signup
   @Post('/signup')
   async signup(@Body() signupDto: SignupDto) {
     const user = await this.authService.signup(signupDto);
@@ -37,20 +37,19 @@ export class AuthController {
     };
   }
 
-  // login
   @Post('/login')
   @HttpCode(200)
   async signin(@Body() signinDto: SigninDto) {
-    const accessToken = await this.authService.signin(signinDto);
+    const { accessToken, user } = await this.authService.signin(signinDto);
 
     return {
       success: true,
       message: 'Logged in successfully',
       accessToken,
+      user,
     };
   }
 
-  // login
   @Post('/confirm')
   @HttpCode(200)
   async confirmEmail(@Body() confirmEmailDto: ConfirmEmailDto) {
@@ -61,7 +60,6 @@ export class AuthController {
     };
   }
 
-  // forget password
   @Post('forget-password')
   @HttpCode(200)
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
@@ -72,7 +70,6 @@ export class AuthController {
     };
   }
 
-  // reset password
   @Post('reset-password')
   @HttpCode(200)
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
@@ -93,7 +90,6 @@ export class AuthController {
     };
   }
 
-  // get me
   @Get('/me')
   @UseGuards(AuthGuard)
   async getMe(@Req() req: any) {
@@ -103,7 +99,7 @@ export class AuthController {
     };
   }
 
-    @Patch('/profile/:id')
+  @Patch('/profile/:id')
   async updateUser(
     @Param('id') userId: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -111,4 +107,11 @@ export class AuthController {
     return await this.authService.updateUser(userId, updateUserDto);
   }
 
+   @Patch('/change-password/:id')
+  async changePassword(
+    @Param('id') userId: string,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return await this.authService.changePassword(userId, dto);
+  }
 }

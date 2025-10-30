@@ -86,7 +86,7 @@ const PrivacySetting = () => {
       <div className="flex justify-end -mt-12">
         <button
           onClick={changePass}
-          className="bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 cursor-pointer mt-10"
+          className="bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-800 cursor-pointer mt-10"
           type="button"
           style={{
             width: "169px",

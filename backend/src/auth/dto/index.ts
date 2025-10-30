@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsAlphanumeric,
   IsArray,
@@ -7,7 +8,10 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
+  Matches,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { UserRoles } from 'src/common/enum';
 
@@ -72,6 +76,23 @@ export class ResetPasswordDto {
   newPassword: string;
 }
 
+export class UpdateUserLinksDto {
+  @IsOptional()
+  @IsUrl({}, { message: 'Invalid YouTube URL' })
+  youtube?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Invalid Facebook URL' })
+  facebook?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Invalid LinkedIn URL' })
+  linkedin?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Invalid X (Twitter) URL' })
+  x?: string;
+}
 
 export class UpdateUserDto {
   @IsOptional()
@@ -81,6 +102,19 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   lastName?: string;
+
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  countryCode?: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^[0-9]{8,15}$/)
+  phone?: string;
 
   @IsOptional()
   @IsString()
@@ -102,5 +136,34 @@ export class UpdateUserDto {
     secure_url: string;
     public_id: string;
   };
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UpdateUserLinksDto)
+  links?: UpdateUserLinksDto;
+
+  @IsOptional()
+  @IsString()
+  currentPass?: string;
+
+  @IsOptional()
+  @IsString()
+  newPass?: string;
+
+  @IsOptional()
+  @IsString()
+  confirmPass?: string;
 }
 
+export class ChangePasswordDto {
+  @IsString()
+  currentPassword: string;
+
+  @IsString()
+  @MinLength(6)
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]+$/)
+  newPassword: string;
+
+  @IsString()
+  confirmNewPassword: string;
+}

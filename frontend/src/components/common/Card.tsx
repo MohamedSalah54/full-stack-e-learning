@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -17,83 +17,85 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StarIcon from "@mui/icons-material/Star";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { BookA, CircleUserRound, Code, Gauge } from "lucide-react";
+import {
+  bookBtn,
+  mainContainer,
+  mainContent,
+  mainDescription,
+  mainTitle,
+  priceAfterDiscount,
+  priceBeforeDiscount,
+  priceContainer,
+} from "@/styles/card";
+import { CourseLevel } from "@/types/course";
+import { useEnrollmentStore } from "@/zustand/store/enrollment";
 
 interface CourseCardProps {
   image: string;
   title: string;
   rating: number;
+  category: string;
+  instructor: string;
   reviews: number;
   description: string;
-  lessons: number;
+  sections: number;
   students: number;
   price: number;
+  level: CourseLevel;
+  language: string;
   originalPrice?: number;
-  onBook?: () => void;
+  isEnrolled?: boolean;
+  onEnroll?: () => void;
 }
 
 export default function CourseCard({
   image,
   title,
   rating,
+  category,
+  instructor,
   reviews,
   description,
-  lessons,
+  sections,
   students,
   price,
   originalPrice,
-  onBook,
+  level,
+  language,
+  isEnrolled,
+  onEnroll,
 }: CourseCardProps) {
   const [favorite, setFavorite] = useState(false);
 
   return (
-    <Card
-      sx={{
-        width: 300,
-        height: 550,
-        borderRadius: 2,
-        boxShadow: 3,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        transition: "0.3s",
-        "&:hover": { boxShadow: 6 },
-        mx: "auto",
-        mt: 5,
-      }}
-    >
+    <Card sx={mainContainer}>
       {/*IMAGE COURSE*/}
-      <Box sx={{ position: "relative", width: 300, height: 257 }}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: 250,
+          flexShrink: 0,
+          overflow: "hidden",
+        }}
+      >
         <Image
           src={image}
           alt={title}
           fill
-          style={{ objectFit: "cover", borderRadius: "8px" }}
+          style={{
+            objectFit: "cover",
+            borderTopLeftRadius: "8px",
+            borderTopRightRadius: "8px",
+          }}
         />
       </Box>
 
       {/* content */}
-      <CardContent
-        sx={{
-          width: 300,
-          height: 290,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          padding: 2,
-        }}
-      >
+      <CardContent sx={mainContent}>
         {/* title*/}
-        <Typography
-          sx={{
-            fontFamily: "Tajawal",
-            fontWeight: 700,
-            fontSize: 20,
-            textTransform: "capitalize",
-            lineHeight: "100%",
-          }}
-        >
-          {title}
-        </Typography>
+        <Typography sx={mainTitle}>{title}</Typography>
 
         {/* rating and add to fav*/}
         <Box
@@ -133,24 +135,22 @@ export default function CourseCard({
             )}
           </IconButton>
         </Box>
+        {/* category */}
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Code fontSize="small" />
+          <Typography variant="body2">{category}</Typography>
+        </Box>
+
+        {/* instructor name */}
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <CircleUserRound fontSize="small" color="oklch(62.7% 0.265 303.9)" />
+          <Typography variant="body2">{instructor}</Typography>
+        </Box>
 
         {/* description*/}
-        <Typography
-          sx={{
-            fontFamily: "Tajawal",
-            fontWeight: 400,
-            fontSize: 16,
-            color: "text.secondary",
-            textTransform: "capitalize",
-            lineHeight: "100%",
-            overflow: "hidden",
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-          }}
-        >
-          {description}
-        </Typography>
+        <Typography sx={mainDescription}>{description}</Typography>
 
         {/* lessons and students */}
         <Box
@@ -159,97 +159,65 @@ export default function CourseCard({
             height: 24,
             display: "flex",
             alignItems: "center",
-            gap: 3,
+            gap: 4.5,
             color: "text.secondary",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <MenuBookIcon fontSize="small" />
-            <Typography variant="body2">{lessons} Lessons</Typography>
+            <MenuBookIcon
+              fontSize="small"
+              sx={{ color: "oklch(58.5% 0.233 277.117)" }}
+            />
+            <Typography variant="body2">  {sections} {sections === 1 ? "Section" : "Sections"}</Typography>
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <PeopleAltIcon fontSize="small" />
-            <Typography variant="body2">{students} Students</Typography>
+            <PeopleAltIcon
+              fontSize="small"
+              sx={{ color: "oklch(76.9% 0.188 70.08)" }}
+            />
+            <Typography variant="body2">
+              {students} {students === 1 ? "Student" : "Students"}
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* language & level */}
+        <Box
+          sx={{
+            width: 268,
+            height: 24,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            color: "text.secondary",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <BookA fontSize="small" color="oklch(69.6% 0.17 162.48)" />
+            <Typography variant="body2"> {language} </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Gauge fontSize="small" color="red" />
+            <Typography variant="body2"> {level}</Typography>
           </Box>
         </Box>
 
         {/* price and book*/}
-        <CardActions
-          sx={{
-            width: 268,
-            height: 50,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "auto",
-            padding: 0,
-          }}
-        >
+        <CardActions sx={priceContainer}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
             {/* after discount */}
-            <Typography
-              sx={{
-                fontFamily: "Nunito",
-                fontWeight: 600,
-                fontStyle: "SemiBold",
-                fontSize: "22px",
-                lineHeight: "125%",
-                letterSpacing: "0%",
-                verticalAlign: "middle",
-                color: "green",
-              }}
-            >
-              ${price}
-            </Typography>
+            <Typography sx={priceAfterDiscount}>${price}</Typography>
 
             {/* original price */}
             {originalPrice && (
-              <Typography
-                sx={{
-                  fontFamily: "Nunito",
-                  fontWeight: 400,
-                  fontStyle: "Regular",
-                  fontSize: "18px",
-                  lineHeight: "150%",
-                  letterSpacing: "0%",
-                  verticalAlign: "middle",
-                  color: "gray",
-                  textDecoration: "line-through",
-                }}
-              >
-                ${originalPrice}
-              </Typography>
+              <Typography sx={priceBeforeDiscount}>${originalPrice}</Typography>
             )}
           </Box>
 
-          <Button
-            onClick={onBook}
-            variant="contained"
-            sx={{
-              width: 117,
-              height: 44,
-              borderRadius: "8px",
-              backgroundColor: "#2c3b50ff",
-              textTransform: "capitalize",
-              opacity: 1,
-              gap: "8px",
-              paddingTop: "16px",
-              paddingRight: "20px",
-              paddingBottom: "16px",
-              paddingLeft: "20px",
-              "&:hover": { backgroundColor: "#111827" },
-              fontFamily: "Inter",
-              fontWeight: 400,
-              fontStyle: "normal",
-              fontSize: "16px",
-              lineHeight: "100%",
-              letterSpacing: "0%",
-              textAlign: "center",
-              color: "#fff",
-            }}
-          >
-            Book Now
+          <Button onClick={onEnroll} sx={bookBtn(isEnrolled)}>
+            {isEnrolled ? "Unenroll" : "Enroll Now"}
           </Button>
         </CardActions>
       </CardContent>

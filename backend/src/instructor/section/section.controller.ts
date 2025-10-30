@@ -45,6 +45,17 @@ export class SectionController {
       data: sections,
     };
   }
+  
+@Get('course/:courseId')
+async getSectionsByCourse(@Param('courseId') courseId: string) {
+  const sections = await this.sectionService.findByCourseId(courseId);
+  return {
+    message: 'Sections fetched successfully',
+    statusCode: 200,
+    data: sections,
+  };
+}
+
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: updateSectionDto) {

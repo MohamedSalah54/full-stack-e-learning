@@ -17,15 +17,17 @@ import { EnrollmentService } from './enrollment.service';
 export class EnrollmentController {
     constructor(private readonly enrollmentService: EnrollmentService) { }
 
-    @Post()
-    async enroll(@Body() dto: CreateEnrollmentDto) {
-        const enrollment = await this.enrollmentService.enroll(dto);
-        return {
-            message: 'Enrollment created successfully',
-            statusCode: 201,
-            data: enrollment,
-        };
-    }
+@Post()
+async enroll(@Body() dto: CreateEnrollmentDto) {
+  console.log('Received DTO:', dto); // 👈 أضف ده هنا
+  const enrollment = await this.enrollmentService.enroll(dto);
+  return {
+    message: 'Enrollment created successfully',
+    statusCode: 201,
+    data: enrollment,
+  };
+}
+
 
 
 

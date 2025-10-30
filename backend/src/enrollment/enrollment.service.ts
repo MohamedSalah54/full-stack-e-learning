@@ -124,20 +124,37 @@ export class EnrollmentService {
 
 
 
-  async getEnrollmentsByUser(userId: string) {
-    try {
-      if (!userId || !Types.ObjectId.isValid(userId)) {
-        throw new BadRequestException('Invalid user ID');
-      }
-
-      return await this.enrollmentRepo.find({
-        filter: { userId },
-        populate: [{ path: 'courseId' }],
-      });
-    } catch (error) {
-      throw new BadRequestException(error.message || 'Failed to get user enrollments');
+ async getEnrollmentsByUser(userId: string) {
+  try {
+    if (!userId || !Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid user ID');
     }
+
+    return await this.enrollmentRepo.find({
+      filter: { userId },
+      populate: [
+        {
+          path: 'courseId',
+          populate: [
+            {
+              path: 'instructor',
+              select: 'firstName lastName ',
+            },
+            {
+              path: 'category',
+              select: 'name',
+            },
+          ],
+        },
+      ],
+    });
+  } catch (error) {
+    throw new BadRequestException(
+      error.message || 'Failed to get user enrollments',
+    );
   }
+}
+
 
   async getEnrollmentsByCourse(courseId: string) {
     try {

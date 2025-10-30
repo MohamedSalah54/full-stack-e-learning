@@ -8,13 +8,13 @@ import {
   FaXTwitter,
   FaPen,
 } from "react-icons/fa6";
-import { useCourseStore } from "@/zustand/store/courseStore";
 import { Dock } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
+import { useEnrollmentStore } from "@/zustand/store/enrollment";
+import { useEffect } from "react";
 
 export default function ImageWithLinks() {
-  const { count, fetchInstructorCourseCount, loading } = useCourseStore();
-
+  const { enrollments, getCourseEnrollmentsCount } = useEnrollmentStore();
   const {
     user,
     profileImage,
@@ -22,6 +22,12 @@ export default function ImageWithLinks() {
     handleEditClick,
     handleImageUpload,
   } = useProfile();
+
+  useEffect(() => {
+    if (user?.id) {
+      getCourseEnrollmentsCount(user.id);
+    }
+  }, [user]);
 
   return (
     <div
@@ -60,14 +66,15 @@ export default function ImageWithLinks() {
 
           <p className="text-gray-600 flex items-center gap-2">
             <Dock className="w-5 h-5 text-gray-800" />
-            {loading ? (
-              "Loading..."
-            ) : count !== null ? (
+            {enrollments?.length > 0 ? (
               <>
-                {count} {count === 1 ? "Course" : "Courses"}
+                {enrollments.length}{" "}
+                {enrollments.length === 1
+                  ? "Enrolled Course"
+                  : "Enrolled Courses"}
               </>
             ) : (
-              "No courses yet"
+              "No enrolled courses"
             )}
           </p>
         </div>
