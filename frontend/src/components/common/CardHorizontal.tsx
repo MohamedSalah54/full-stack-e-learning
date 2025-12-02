@@ -46,16 +46,13 @@ const CardHorizontal: React.FC<CardHorizontalProps> = ({
           className="flex-shrink-0 overflow-hidden border"
           style={{
             width: imageWidth,
-            height: imageHeight,
             borderRadius: 8,
-            opacity: 1,
-            marginLeft: 0,
           }}
         >
           <img
             src={image}
             alt={title}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-auto block rounded-md"
           />
         </div>
       )}
@@ -68,7 +65,7 @@ const CardHorizontal: React.FC<CardHorizontalProps> = ({
             className="flex flex-col justify-start gap-2"
             style={{ width: 453, height: 66, opacity: 1 }}
           >
-            {rating && (
+            {rating !== undefined && rating !== null && (
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (

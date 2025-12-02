@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -29,9 +28,14 @@ import {
   priceContainer,
 } from "@/styles/card";
 import { CourseLevel } from "@/types/course";
-import { useEnrollmentStore } from "@/zustand/store/enrollment";
+import { toast } from "react-toastify";
+import { useWishlistStore } from "@/zustand/store/wishlist";
+import { useAuthStore } from "@/zustand/store/authStore";
+import { useEffect, useState } from "react";
 
 interface CourseCardProps {
+  courseId: string;
+  userId?: string;
   image: string;
   title: string;
   rating: number;
@@ -46,10 +50,14 @@ interface CourseCardProps {
   language: string;
   originalPrice?: number;
   isEnrolled?: boolean;
+  customActions?: React.ReactNode;
   onEnroll?: () => void;
 }
 
 export default function CourseCard({
+  courseId,
+  userId,
+  customActions,
   image,
   title,
   rating,
@@ -66,28 +74,62 @@ export default function CourseCard({
   isEnrolled,
   onEnroll,
 }: CourseCardProps) {
-  const [favorite, setFavorite] = useState(false);
+  const {
+    wishlist,
+    addCourseToWishlist,
+    removeCourseFromWishlist,
+    fetchWishlist,
+  } = useWishlistStore();
+  const user = useAuthStore((state) => state.user);
+  useEffect(() => {
+    if (user) {
+      fetchWishlist(user.id);
+    }
+  }, [user, fetchWishlist]);
+
+  const isFavorite = wishlist.some((item) => {
+    const cid =
+      typeof item.courseId === "string" ? item.courseId : item.courseId._id;
+    return cid === courseId;
+  });
+
+  const handleToggleFavorite = async () => {
+    if (!user) return toast.error("Please log in first");
+    if (!courseId) return toast.error("Course ID not found");
+
+    try {
+      if (isFavorite) {
+        await removeCourseFromWishlist(user.id, courseId);
+        toast.success("Removed from wishlist");
+      } else {
+        await addCourseToWishlist({ userId: user.id, courseId });
+        toast.success("Added to wishlist");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Wishlist action failed");
+    }
+  };
 
   return (
     <Card sx={mainContainer}>
       {/*IMAGE COURSE*/}
       <Box
         sx={{
-          position: "relative",
           width: "100%",
-          height: 250,
-          flexShrink: 0,
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
           overflow: "hidden",
         }}
       >
         <Image
           src={image}
           alt={title}
-          fill
+          width={500} 
+          height={300} 
           style={{
-            objectFit: "cover",
-            borderTopLeftRadius: "8px",
-            borderTopRightRadius: "8px",
+            width: "100%",
+            height: "auto",
+            display: "block",
           }}
         />
       </Box>
@@ -127,8 +169,8 @@ export default function CourseCard({
             </Typography>
           </Box>
 
-          <IconButton onClick={() => setFavorite(!favorite)}>
-            {favorite ? (
+          <IconButton onClick={handleToggleFavorite}>
+            {isFavorite ? (
               <FavoriteIcon sx={{ color: "red" }} />
             ) : (
               <FavoriteBorderIcon sx={{ color: "gray" }} />
@@ -168,7 +210,10 @@ export default function CourseCard({
               fontSize="small"
               sx={{ color: "oklch(58.5% 0.233 277.117)" }}
             />
-            <Typography variant="body2">  {sections} {sections === 1 ? "Section" : "Sections"}</Typography>
+            <Typography variant="body2">
+              {" "}
+              {sections} {sections === 1 ? "Section" : "Sections"}
+            </Typography>
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -205,21 +250,25 @@ export default function CourseCard({
         </Box>
 
         {/* price and book*/}
-        <CardActions sx={priceContainer}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
-            {/* after discount */}
-            <Typography sx={priceAfterDiscount}>${price}</Typography>
+    <CardActions sx={priceContainer}>
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+    <Typography sx={priceAfterDiscount}>${price}</Typography>
 
-            {/* original price */}
-            {originalPrice && (
-              <Typography sx={priceBeforeDiscount}>${originalPrice}</Typography>
-            )}
-          </Box>
+    {originalPrice && (
+      <Typography sx={priceBeforeDiscount}>${originalPrice}</Typography>
+    )}
+  </Box>
 
-          <Button onClick={onEnroll} sx={bookBtn(isEnrolled)}>
-            {isEnrolled ? "Unenroll" : "Enroll Now"}
-          </Button>
-        </CardActions>
+  {/* استخدم customActions لو موجود */}
+  {customActions ? (
+    customActions
+  ) : (
+    <Button onClick={onEnroll} sx={bookBtn(isEnrolled)}>
+      {isEnrolled ? "Unenroll" : "Enroll Now"}
+    </Button>
+  )}
+</CardActions>
+
       </CardContent>
     </Card>
   );

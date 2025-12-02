@@ -5,6 +5,13 @@ import {
   data_science_img,
   digital_marketing_img,
   full_stack_img,
+  sidebar_create_course_white,
+  sidebar_earnings_white,
+  sidebar_help_white,
+  sidebar_home_white,
+  sidebar_message_white,
+  sidebar_mycoursees_white,
+  sidebar_settings_white,
 } from "@/assets";
 import { FaUser, FaUsers, FaBuilding, FaQuoteLeft } from "react-icons/fa";
 
@@ -167,4 +174,59 @@ export const courses = [
     price: 49,
     image: "/image.png",
   },
+];
+
+export const sidebarList = [
+  {
+    id: 1,
+    title: "Dashboard",
+    image: sidebar_home_white,
+    path: "/instructor/dashboard/",
+  },
+  {
+    id: 2,
+    title: "Create New Course",
+    image: sidebar_create_course_white,
+    path: "/instructor/course/create",
+  },
+  {
+    id: 3,
+    title: "My Courses",
+    image: sidebar_mycoursees_white,
+    path: "/instructor/myCourses",
+  },
+  {
+    id: 4,
+    title: "Earnings",
+    image: sidebar_earnings_white,
+    path: "/instructor/earning/",
+  },
+  {
+    id: 5,
+    title: "Messages",
+    image: sidebar_message_white,
+    path: "/instructor/messages/",
+  },
+  {
+    id: 6,
+    title: "Settings",
+    image: sidebar_settings_white,
+    path: "/instructor/settings/",
+  },
+  {
+    id: 7,
+    title: "Help",
+    image: sidebar_help_white,
+    path: "/instructor/help/",
+  },
+];
+
+export const records = [
+  { id: 1, date: "21 Sep, 2021 at 2:14 AM", method: "Mastercard", amount: "$1,200", status: "Pending" },
+  { id: 2, date: "22 Sep, 2021 at 4:00 PM", method: "Visa", amount: "$800", status: "Completed" },
+  { id: 3, date: "23 Sep, 2021 at 10:30 AM", method: "PayPal", amount: "$500", status: "Canceled" },
+  { id: 4, date: "24 Sep, 2021 at 1:45 PM", method: "Mastercard", amount: "$2,000", status: "Completed" },
+  { id: 5, date: "25 Sep, 2021 at 3:20 PM", method: "Visa", amount: "$1,500", status: "Pending" },
+  { id: 6, date: "26 Sep, 2021 at 5:10 PM", method: "PayPal", amount: "$700", status: "Completed" },
+  { id: 7, date: "27 Sep, 2021 at 11:00 AM", method: "Mastercard", amount: "$1,000", status: "Pending" },
 ];

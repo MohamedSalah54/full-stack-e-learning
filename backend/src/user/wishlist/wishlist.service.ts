@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { WishlistRepo } from 'src/db/wishlist/wishlist.repo';
 import { CreateWishlistDto } from './dto';
 import { Types } from 'mongoose';
@@ -32,10 +36,17 @@ export class WishlistService {
 
   async getWishlist(userId: string) {
     try {
-      return await this.wishlistRepo.find({
+      const wishlist = await this.wishlistRepo.find({
         filter: { userId: new Types.ObjectId(userId) },
-        populate: [{ path: 'courseId', select: 'title description' }],
+        populate: [
+          {
+            path: 'courseId',
+            select:
+              'title description thumbnail price rating reviews lessons students',
+          },
+        ],
       });
+      return wishlist;
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Failed to fetch wishlist');

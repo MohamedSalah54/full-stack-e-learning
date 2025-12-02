@@ -2,13 +2,13 @@ import { contact_us } from "@/assets";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import Image from "next/image";
 
-export default function AboutPage() {
+export default function ContactUs() {
   return (
     <div className="flex min-h-120">
-      {/* الجزء اليسار - المحتوى */}
+      {/* left side */}
       <div className="w-[100%] h-170 flex items-center justify-center bg-gray-50">
         <div className="w-[85%] h-[85%] bg-white shadow-lg rounded-2xl flex overflow-hidden">
-          {/* اليسار */}
+          {/* left */}
           <div className="w-[60%] p-8 flex flex-col justify-between">
             <div>
               <h2 className="text-2xl font-semibold mb-2">Contact Us</h2>
@@ -42,7 +42,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* اليمين */}
+          {/* right */}
           <div className="w-[40%] bg-white p-8 flex flex-col justify-between">
             <Image
               src={contact_us}
@@ -70,7 +70,7 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
-      {/* الجزء اليمين - الصورة */}
+      {/* right side */}
       {/* <div className="w-[50%] h-screen mt-20 mr-5">
    
       </div> */}

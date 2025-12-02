@@ -1,16 +1,16 @@
-export const mainContainer = {
-  width: 320,
-  height: 650,
-  borderRadius: 2,
-  boxShadow: 3,
-  display: "flex",
-  flexDirection: "column",
-  overflow: "hidden",
-  transition: "0.3s",
-  "&:hover": { boxShadow: 6 },
-  mx: "auto",
-  mt: 5,
-};
+  export const mainContainer = {
+    width: 320,
+    height: 600,
+    borderRadius: 2,
+    boxShadow: 3,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    transition: "0.3s",
+    "&:hover": { boxShadow: 6 },
+    mx: "auto",
+    mt: 5,
+  };
 
 export const mainContent = {
   display: "flex",

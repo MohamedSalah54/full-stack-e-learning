@@ -13,12 +13,17 @@ import { useEnrollmentStore } from "@/zustand/store/enrollment";
 import { toast } from "react-toastify";
 
 export default function AllCoursesPage() {
-  const { createEnrollment, removeEnrollment, enrollments,getUserEnrollments } = useEnrollmentStore();
+  const {
+    createEnrollment,
+    removeEnrollment,
+    enrollments,
+    getUserEnrollments,
+  } = useEnrollmentStore();
 
   const [loading, setLoading] = useState(true);
   const COURSES_PER_PAGE = 8;
 
-  const { courses, error, getCourses } = useCourseStore();
+  const { courses, getCourses } = useCourseStore();
   const [startIndex, setStartIndex] = useState(0);
   const user = useAuthStore((state) => state.user);
   const router = useRouter();
@@ -36,12 +41,11 @@ export default function AllCoursesPage() {
       ? "Access a curated catalog of professional courses designed to enhance your skills and support your career growth."
       : "Create, organize, and monitor your courses with advanced tools designed to help you reach and engage learners effectively.";
 
-        useEffect(() => {
+  useEffect(() => {
     if (user?.id) {
       getUserEnrollments(user.id);
     }
-  }, [user?.id]); 
-
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,19 +62,18 @@ export default function AllCoursesPage() {
     }
   };
 
+
   const handlePrev = () => {
     if (startIndex - COURSES_PER_PAGE >= 0) {
       setStartIndex(startIndex - COURSES_PER_PAGE);
     }
   };
 
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   const visibleCourses = courses.slice(
     startIndex,
     startIndex + COURSES_PER_PAGE
   );
-
 
   return (
     <>
@@ -114,49 +117,62 @@ export default function AllCoursesPage() {
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {visibleCourses.map((course) => (
                   <CourseCard
-          key={course._id}
-          image={course.thumbnail?.secure_url || "/image.png"}
-          title={course.title}
-          rating={course.rating || 4.9}
-          category={course.category.name}
-          instructor={
-            course.instructor
-              ? `${course.instructor.firstName?.[0]?.toUpperCase() || ""}${course.instructor.firstName?.slice(1) || ""} ${
-                  course.instructor.lastName
-                    ? course.instructor.lastName[0]?.toUpperCase() + course.instructor.lastName.slice(1)
-                    : ""
-                }`
-              : ""
-          }
-          level={course.level}
-          language={course.language}
-          reviews={course.rating || 0}
-          description={course.description}
-          lessons={course.lessonsCount || 0}
-          students={course.studentsCount || 0}
-          price={course.price}
-          originalPrice={course.originalPrice}
-          onEnroll={async () => {
-            if (!user?.id) return toast("Please log in first");
+                    courseId={course._id}
+                    userId={user?.id}
+                    key={course._id}
+                    image={course.thumbnail?.secure_url || "/image.png"}
+                    title={course.title}
+                    rating={course.rating || 4.9}
+                    category={course.category.name}
+                    instructor={
+                      course.instructor
+                        ? `${
+                            course.instructor.firstName?.[0]?.toUpperCase() ||
+                            ""
+                          }${course.instructor.firstName?.slice(1) || ""} ${
+                            course.instructor.lastName
+                              ? course.instructor.lastName[0]?.toUpperCase() +
+                                course.instructor.lastName.slice(1)
+                              : ""
+                          }`
+                        : ""
+                    }
+                    level={course.level}
+                    language={course.language}
+                    reviews={course.rating || 0}
+                    description={course.description}
+                    lessons={course.lessonsCount || 0}
+                    students={course.studentsCount || 0}
+                    price={course.price}
+                    originalPrice={course.originalPrice}
+                    onEnroll={async () => {
+                      if (!user?.id) return toast("Please log in first");
 
-            try {
-              const existing = enrollments.find((e) => e.courseId._id === course._id);
+                      try {
+                        const existing = enrollments.find(
+                          (e) => e.courseId._id === course._id
+                        );
 
-              if (existing) {
-                await removeEnrollment(existing._id);
-                await getUserEnrollments(user.id);
-                toast.success("Unenrolled successfully!");
-              } else {
-                await createEnrollment(user.id, course._id);
-                await getUserEnrollments(user.id);
-                toast.success("Enrolled successfully!");
-              }
-            } catch (error: any) {
-              toast.error(error.response?.data?.message || "Enrollment action failed");
-            }
-          }}
-          isEnrolled={enrollments.some((e) => e.courseId._id === course._id)}
-        />
+                        if (existing) {
+                          await removeEnrollment(existing._id);
+                          await getUserEnrollments(user.id);
+                          toast.success("Unenrolled successfully!");
+                        } else {
+                          await createEnrollment(user.id, course._id);
+                          await getUserEnrollments(user.id);
+                          toast.success("Enrolled successfully!");
+                        }
+                      } catch (error: any) {
+                        toast.error(
+                          error.response?.data?.message ||
+                            "Enrollment action failed"
+                        );
+                      }
+                    }}
+                    isEnrolled={enrollments.some(
+                      (e) => e.courseId._id === course._id
+                    )}
+                  />
                 ))}
               </div>
             ) : (

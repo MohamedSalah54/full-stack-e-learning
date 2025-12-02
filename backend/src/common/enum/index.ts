@@ -54,3 +54,9 @@ export enum CourseLevels {
   INTERMEDIATE = 'intermediate',
   ADVANCED = 'advanced',
 }
+
+export enum QuestionType {
+  MCQ = 'MCQ',
+  TRUE_FALSE = 'TRUE_FALSE',
+  SHORT_ANSWER = 'SHORT_ANSWER', 
+}

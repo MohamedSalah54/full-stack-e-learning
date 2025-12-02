@@ -1,4 +1,4 @@
-export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
+export type CourseLevel = "beginner" | "intermediate" | "advanced";
 
 export interface IImage {
   secure_url: string;
@@ -9,17 +9,17 @@ export interface Course {
   _id: string;
   title: string;
   description: string;
-  thumbnail: IImage
+  thumbnail: IImage;
   instructor: {
     _id: string;
     firstName: string;
     lastName: string;
     profilePicture?: string;
-  }; 
+  };
   category: {
     _id: string;
     name: string;
-  }; 
+  };
   level: CourseLevel;
   language: string;
   price: number;
@@ -28,4 +28,14 @@ export interface Course {
   createdAt: string;
   updatedAt: string;
 }
+export interface CreateCourse {
+  title: string;
+  description: string;
+  courseLevel: string;
+  courseCategory: string;
+  courseLanguage: string;
+  coursePrice: string;
+  courseThumbnail: string;
+}
+
 

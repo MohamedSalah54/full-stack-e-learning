@@ -1,12 +1,9 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, HydratedDocument, Types } from 'mongoose';
 import { Quiz } from '../quiz/quiz.model';
+import { QuestionType } from 'src/common/enum';
 
-export enum QuestionType {
-  MCQ = 'MCQ',
-  TRUE_FALSE = 'TRUE_FALSE',
-  SHORT_ANSWER = 'SHORT_ANSWER', 
-}
+
 
 @Schema({
   timestamps: true,

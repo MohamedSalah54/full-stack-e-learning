@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray } from 'class-validator';
-import { QuestionType } from 'src/db/question/question.model';
+import { QuestionType } from 'src/common/enum';
 
 
 export class CreateQuestionDto {
