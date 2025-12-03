@@ -56,6 +56,7 @@ const MyCourses = () => {
                 const course = enroll.courseId;
                 return (
                   <CourseCard
+                    courseId={course._id}
                     key={course._id}
                     image={course.thumbnail?.secure_url || "/image.png"}
                     title={course.title}
@@ -82,7 +83,7 @@ const MyCourses = () => {
                     reviews={course.rating || 0}
                     description={course.description}
                     sections={sections.length || 0}
-                    students={courseEnrollmentsCount || 0} // ✅ هنا بنمرر العدد
+                    students={courseEnrollmentsCount || 0}
                     price={course.price}
                     originalPrice={course.originalPrice}
                     onEnroll={() =>
