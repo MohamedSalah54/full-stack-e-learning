@@ -32,6 +32,7 @@ import { toast } from "react-toastify";
 import { useWishlistStore } from "@/zustand/store/wishlist";
 import { useAuthStore } from "@/zustand/store/authStore";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CourseCardProps {
   courseId: string;
@@ -74,6 +75,8 @@ export default function CourseCard({
   isEnrolled,
   onEnroll,
 }: CourseCardProps) {
+  const router = useRouter();
+
   const {
     wishlist,
     addCourseToWishlist,
@@ -120,12 +123,14 @@ export default function CourseCard({
           borderTopRightRadius: "8px",
           overflow: "hidden",
         }}
+        onClick={() => router.push(`/courses/${courseId}`)}
+        className="cursor-pointer"
       >
         <Image
           src={image}
           alt={title}
-          width={500} 
-          height={300} 
+          width={500}
+          height={300}
           style={{
             width: "100%",
             height: "auto",
@@ -234,7 +239,7 @@ export default function CourseCard({
             height: 24,
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 7.5,
             color: "text.secondary",
           }}
         >
@@ -250,25 +255,23 @@ export default function CourseCard({
         </Box>
 
         {/* price and book*/}
-    <CardActions sx={priceContainer}>
-  <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
-    <Typography sx={priceAfterDiscount}>${price}</Typography>
+        <CardActions sx={priceContainer}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+            <Typography sx={priceAfterDiscount}>${price}</Typography>
 
-    {originalPrice && (
-      <Typography sx={priceBeforeDiscount}>${originalPrice}</Typography>
-    )}
-  </Box>
+            {originalPrice && (
+              <Typography sx={priceBeforeDiscount}>${originalPrice}</Typography>
+            )}
+          </Box>
 
-  {/* استخدم customActions لو موجود */}
-  {customActions ? (
-    customActions
-  ) : (
-    <Button onClick={onEnroll} sx={bookBtn(isEnrolled)}>
-      {isEnrolled ? "Unenroll" : "Enroll Now"}
-    </Button>
-  )}
-</CardActions>
-
+          {customActions ? (
+            customActions
+          ) : (
+            <Button onClick={onEnroll} sx={bookBtn(isEnrolled)}>
+              {isEnrolled ? "Unenroll" : "Enroll Now"}
+            </Button>
+          )}
+        </CardActions>
       </CardContent>
     </Card>
   );

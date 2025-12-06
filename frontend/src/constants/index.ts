@@ -153,7 +153,7 @@ export const navUser = [
   { id: "settings", label: "Settings" },
 ];
 
-export const courses = [
+export const coursesPurchaseHistory = [
   {
     id: 1,
     title: "Next.js Mastery Course",

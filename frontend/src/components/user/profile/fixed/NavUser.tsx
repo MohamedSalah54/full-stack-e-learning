@@ -2,15 +2,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import AccountSetting from "../profileSettings/AccountSetting";
 import { navUser } from "@/constants";
-import Chat from "@/components/profile/messages/Chat";
 import Wishlist from "../favorite/Wishlist";
 import PurchaseHistory from "../purchase/PurchaseHistory";
 import MyCourses from "../enrollment/MyCourses";
+import Chat from "../messages/Chat";
 
 export default function NavUser() {
   const [activeTab, setActiveTab] = useState("courses");
 
-  // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5;
 
@@ -98,8 +97,7 @@ export default function NavUser() {
 
         {activeTab === "wishlist" && (
           <div className="flex flex-col gap-6" ref={wishlistRef}>
-                         <Wishlist  />
-
+            <Wishlist />
           </div>
         )}
         {activeTab === "messages" && (

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { BookOpen, ChevronDown, ChevronUp, Star, Users } from "lucide-react";
 import Image from "next/image";
 import { creditCard, currencyDollar, playCircle } from "@/assets";
-import { courses } from "@/constants";
+import { coursesPurchaseHistory } from "@/constants";
 import CardHorizontal from "@/components/common/CardHorizontal";
 
 const PurchaseHistory: React.FC = () => {
@@ -102,21 +102,21 @@ const PurchaseHistory: React.FC = () => {
       <div
         className={`transition-all duration-500 ease-in-out overflow-hidden`}
         style={{
-          maxHeight: isOpen ? "600px" : "0px",
+          maxHeight: isOpen ? "650px" : "0px",
           opacity: isOpen ? 1 : 0,
         }}
       >
         {isOpen && (
           <>
             {(() => {
-              const totalPrice = courses.reduce((sum, c) => sum + c.price, 0);
+              const totalPrice = coursesPurchaseHistory.reduce((sum, c) => sum + c.price, 0);
 
               return (
                 <>
-                  {courses.map((course) => (
+                  {coursesPurchaseHistory.map((course) => (
                     <div
                       key={course.id}
-                      className="flex flex-row justify-between items-start mt-6 gap-6 pb-6"
+                      className="flex flex-row justify-between items-start mt-12 gap-6 pb-6"
                     >
                       <CardHorizontal
                         image={course.image}
@@ -154,7 +154,7 @@ const PurchaseHistory: React.FC = () => {
                           <div className="flex items-center gap-2 w-[110px] h-[28px] text-gray-800">
                             <Image src={playCircle} alt="courses" />
                             <span className="text-sm font-medium">
-                              {courses.length} Courses
+                              {coursesPurchaseHistory.length} Courses
                             </span>
                           </div>
 
@@ -177,7 +177,7 @@ const PurchaseHistory: React.FC = () => {
                   ))}
 
                   {/* total price  */}
-                  {courses.length > 1 && (
+                  {coursesPurchaseHistory.length > 1 && (
                     <div className="border-t pt-4 w-fit ml-auto mr-45 mb-10">
                       <p className="flex items-center gap-2 text-lg font-semibold text-gray-900">
                         Total Price:

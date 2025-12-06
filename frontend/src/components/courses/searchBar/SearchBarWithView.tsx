@@ -1,24 +1,28 @@
 "use client";
-
-import { useState } from "react";
 import { FiGrid, FiList } from "react-icons/fi";
 
-export default function SearchBarWithView() {
-  const [view, setView] = useState<"grid" | "list">("grid");
+type ViewType = "grid" | "list";
 
+interface SearchBarWithViewProps {
+  view: ViewType;
+  setView: React.Dispatch<React.SetStateAction<ViewType>>;
+}
+
+export default function SearchBarWithView({
+  view,
+  setView,
+}: SearchBarWithViewProps) {
   return (
     <div
       className="w-[960px] h-[48px] flex justify-between items-center "
       style={{ marginLeft: "70px" }}
     >
-      {/* Search Bar */}
       <input
         type="text"
         placeholder="Search..."
-        className="w-[300px] h-[48px] px-5 py-3 gap-2 rounded-[6px] border border-[#E2E0DB] bg-gray-200 focus:outline-none"
+        className="w-[300px] h-[48px] px-5 py-3 gap-2 rounded-[6px] border border-[#E2E0DB] bg-gray-100 focus:outline-none"
       />
 
-      {/* Icons */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => setView("list")}
