@@ -23,6 +23,7 @@ import aboutUs_feedback from '@/assets/images/home/aboutUs/about-us-feedback.png
 import aboutUs_top_right from '@/assets/images/home/aboutUs/about-us-top-right.png'
 import aboutUs_bottom_left from '@/assets/images/home/aboutUs/about-us-bottom-left.png'
 import profile_instructor from '@/assets/images/home/instructor-info/profile_instructor.png'
+import payment_card from '@/assets/images/payment/payment-card.png'
 
 export {
   banner_1_img,
@@ -49,6 +50,7 @@ export {
   aboutUs_top_right,
   aboutUs_bottom_left,
   profile_instructor,
+  payment_card,
 };
 
 // ICONS
