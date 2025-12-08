@@ -24,7 +24,8 @@ import aboutUs_top_right from '@/assets/images/home/aboutUs/about-us-top-right.p
 import aboutUs_bottom_left from '@/assets/images/home/aboutUs/about-us-bottom-left.png'
 import profile_instructor from '@/assets/images/home/instructor-info/profile_instructor.png'
 import payment_card from '@/assets/images/payment/payment-card.png'
-
+import success_modal from '@/assets/images/common/dialog/success-modal.png'
+import error_modal from '@/assets/images/common/dialog/error_modal.png'
 export {
   banner_1_img,
   banner_2_img,
@@ -51,6 +52,8 @@ export {
   aboutUs_bottom_left,
   profile_instructor,
   payment_card,
+  success_modal,
+  error_modal,
 };
 
 // ICONS

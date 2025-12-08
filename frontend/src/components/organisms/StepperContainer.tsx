@@ -3,15 +3,25 @@ import { useState } from "react";
 import CartCheckout from "@/components/payment/cart/CartCheckout";
 import PaymentMethod from "@/components/payment/checkout/PaymentMethod";
 
-interface StepperProps {}
+interface StepperProps {
+  onSuccess: () => void;
+  onError: () => void;
+}
 
-export const StepperContainer: React.FC<StepperProps> = () => {
+export const StepperContainer: React.FC<StepperProps> = ({
+  onSuccess,
+  onError,
+}) => {
   const [step, setStep] = useState(1);
 
   const handleNext = () => {
-    if (step < 2) setStep(step + 1);
-    else {
-      console.log("Complete Payment");
+    if (step < 2) {
+      setStep(step + 1);
+    } else {
+      const paymentSuccess = Math.random() > 0.5; 
+      
+      if (paymentSuccess) onSuccess();
+      else onError();
     }
   };
 
