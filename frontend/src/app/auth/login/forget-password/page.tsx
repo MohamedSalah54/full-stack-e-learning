@@ -1,34 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import Image from "next/image";
-import { useAuthStore } from "@/zustand/store/authStore";
-import { toast } from "react-toastify";
+import { useForgotPasswordLogic } from "@/hooks/auth/useForgotPasswordLogic";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const router = useRouter();
+const ForgotPasswordPage: React.FC = () => {
+  const { email, handleChange, handleSubmit, isPending, error } =
+    useForgotPasswordLogic();
 
-  const forgetPassword = useAuthStore((state) => state.forgetPassword);
-  const loading = useAuthStore((state) => state.loading);
-  const error = useAuthStore((state) => state.error);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await forgetPassword({ email });
-
-      toast.success(" Verification code sent to your email");
-
-      router.push(`/auth/login/forget-password/reset-password?email=${email}`);
-    } catch (err: any) {
-      console.error(" Forget password error:", err);
-      toast.error(
-        err?.response?.data?.message || " Failed to send verification code"
-      );
-    }
-  };
   return (
     <div className="flex min-h-screen">
       {/* Left image */}
@@ -49,8 +28,13 @@ const ForgotPassword = () => {
             Enter your email to receive a reset code.
           </p>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
+          {error && (
+            <p className="text-red-500 text-sm">
+              {typeof error === "string"
+                ? error
+                : (error as any)?.response?.data?.message}
+            </p>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="email"
@@ -58,15 +42,15 @@ const ForgotPassword = () => {
               placeholder="Email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gray-800 transition"
             />
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-700 transition text-sm cursor-pointer"
             >
-              {loading ? "Sending..." : "Send Code"}
+              {isPending ? "Sending..." : "Send Code"}
             </button>
           </form>
         </div>
@@ -75,4 +59,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordPage;

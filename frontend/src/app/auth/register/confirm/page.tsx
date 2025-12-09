@@ -1,44 +1,27 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+"use client"
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAuthStore } from "@/zustand/store/authStore";
-import { toast } from "react-toastify";
 
+interface ConfirmEmailProps {
+  email: string;
+  otp: string;
+  setOtp: (value: string) => void;
+  handleVerifyOTP: (e: React.FormEvent) => void;
+  handleResendCode: () => void;
+  isPending: boolean;
+  isResending: boolean;
+  error: string | null;
+}
 
-const ConfirmEmail = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const email = searchParams.get("email") || "";
-
-  const [otp, setOtp] = useState("");
-
-  const confirmEmail = useAuthStore((state) => state.confirmEmail);
-  const resendCode = useAuthStore((state) => state.resendCode);
-
-  const loading = useAuthStore((state) => state.loading);
-  const error = useAuthStore((state) => state.error);
-
-  useEffect(() => {
-    if (!email) {
-      router.push("/signup");
-    }
-  }, [email, router]);
-
-const handleVerifyOTP = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    await confirmEmail({ email, otp });
-
-    toast.success(" Email confirmed successfully!");
-    router.push("/auth/login");
-  } catch (err: any) {
-    toast.error(err?.response?.data?.message || " Invalid OTP");
-  }
-};
-
+const ConfirmEmail: React.FC<ConfirmEmailProps> = ({
+  email,
+  otp,
+  setOtp,
+  handleVerifyOTP,
+  handleResendCode,
+  isPending,
+  isResending,
+  error,
+}) => {
   return (
     <div className="flex min-h-screen">
       {/* Left image */}
@@ -63,8 +46,13 @@ const handleVerifyOTP = async (e: React.FormEvent) => {
             <span className="font-semibold text-gray-800">{email}</span>
           </p>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
+          {error && (
+            <p className="text-red-500 text-sm">
+              {typeof error === "string"
+                ? error
+                : (error as any)?.response?.data?.message}
+            </p>
+          )}
           <form onSubmit={handleVerifyOTP} className="space-y-4">
             <input
               type="text"
@@ -78,10 +66,10 @@ const handleVerifyOTP = async (e: React.FormEvent) => {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-700 transition text-sm cursor-pointer"
             >
-              {loading ? "Verifying..." : "Verify OTP"}
+              {isPending ? "Verifying..." : "Verify OTP"}
             </button>
           </form>
 
@@ -89,10 +77,13 @@ const handleVerifyOTP = async (e: React.FormEvent) => {
             Didn't receive the code?{" "}
             <button
               type="button"
-              onClick={() => resendCode(email)}
-              className="text-blue-600 hover:underline"
+              onClick={handleResendCode}
+              disabled={isResending}
+              className={`text-blue-600 hover:underline cursor-pointer ${
+                isResending ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Resend
+              {isResending ? "Sending..." : "Resend"}
             </button>
           </p>
         </div>

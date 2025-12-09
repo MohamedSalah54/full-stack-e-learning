@@ -18,9 +18,8 @@ export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
-  //search bar visibility
   const [showSearch, setShowSearch] = useState(false);
 
   const visibility = useRef<HTMLInputElement | null>(null);
@@ -104,7 +103,6 @@ export default function Navbar() {
                 <Image
                   src={logo}
                   alt="Logo"
-                  
                   className="h-full w-full object-contain block"
                 />
               </div>
@@ -116,7 +114,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-6 ml-20">
             {links.map((link) => {
-              const isActive = pathname === link.href; 
+              const isActive = pathname === link.href;
 
               return (
                 <Link key={link.name} href={link.href}>

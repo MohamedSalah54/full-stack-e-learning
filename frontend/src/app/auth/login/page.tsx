@@ -1,41 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/zustand/store/authStore";
-import { toast } from "react-toastify";
+import { useLoginLogic } from "@/hooks/auth/useLoginLogic";
 
-const Login = () => {
-  const router = useRouter();
-
-  const login = useAuthStore((state) => state.login);
-  const loading = useAuthStore((state) => state.loading);
-  const error = useAuthStore((state) => state.error);
-
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const res = await login(form);
-    if (res) {
-      toast.success(" Logged in successfully!");
-      router.push("/");
-    }
-  } catch (err: any) {
-    console.error(" Login failed:", err);
-    toast.error(err?.response?.data?.message || " Email or password is incorrect");
-  }
-};;
+const LoginPage: React.FC = () => {
+  const { form, handleChange, handleSubmit, isPending, error } =
+    useLoginLogic();
 
   return (
     <div className="flex min-h-screen">
@@ -51,8 +23,13 @@ const handleSubmit = async (e: React.FormEvent) => {
             Login to your account
           </h2>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
+          {error && (
+            <p className="text-red-500 text-sm">
+              {typeof error === "string"
+                ? error
+                : (error as any)?.response?.data?.message}
+            </p>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               name="email"
@@ -63,7 +40,6 @@ const handleSubmit = async (e: React.FormEvent) => {
               className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gray-800 transition"
               required
             />
-
             <input
               name="password"
               type="password"
@@ -76,14 +52,13 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-700 transition text-sm cursor-pointer"
             >
-              {loading ? "Logging in..." : "Login"}
+              {isPending ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          {/* Forgot password */}
           <div className="text-right">
             <Link
               href="/auth/login/forget-password"
@@ -93,17 +68,18 @@ const handleSubmit = async (e: React.FormEvent) => {
             </Link>
           </div>
 
-          {/* Divider */}
           <div className="flex items-center gap-4">
             <hr className="flex-1 border-gray-300" />
             <span className="text-gray-400 text-sm">or</span>
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* Register Link */}
           <p className="text-sm text-center text-gray-600">
             Don't have an account?{" "}
-            <Link href="/auth/register" className="text-blue-600 hover:underline">
+            <Link
+              href="/auth/register"
+              className="text-blue-600 hover:underline"
+            >
               Sign Up
             </Link>
           </p>
@@ -113,4 +89,4 @@ const handleSubmit = async (e: React.FormEvent) => {
   );
 };
 
-export default Login;
+export default LoginPage;

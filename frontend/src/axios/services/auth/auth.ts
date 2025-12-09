@@ -16,8 +16,8 @@ export const forgetPasswordApi = (data: { email: string }) =>
 
 export const resetPasswordApi = (data: {
   email: string;
-  code: string;
-  password: string;
+  otp: string;
+  newPassword: string;
 }) => API.post("/auth/reset-password", data);
 
 export const getMeApi = () => API.get("/auth/me");

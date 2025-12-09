@@ -194,8 +194,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
          const payload = {
       email: data.email,
-      code: data.otp, 
-      password: data.newPassword, 
+      otp: data.otp, 
+      newPassword: data.newPassword, 
     };
       const res = await resetPasswordApi(payload);
       // const res = await resetPasswordApi(data);
