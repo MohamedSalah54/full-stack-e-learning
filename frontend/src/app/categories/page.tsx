@@ -1,23 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
-import { useCategoryStore } from "@/zustand/store/category";
 import { Card, CardContent, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { categoryIcons } from "@/constants/icons";
-import { useRouter } from "next/navigation";
+import { useCategoriesLogic } from "@/hooks/categories/useCategoriesLogic";
+import { Category } from "@/types/category";
 
 export default function CategoriesPage() {
-  const router = useRouter();
-  const { categories, fetchCategories } = useCategoryStore();
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  const { categories, goToCategory } = useCategoriesLogic();
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-12">
-      {/* العنوان */}
+      {/* title */}
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold mb-2">Explore Our Categories</h1>
         <p className="text-gray-600">
@@ -25,23 +19,19 @@ export default function CategoriesPage() {
         </p>
       </div>
 
-      {/* الكروت */}
+      {/* cards */}
       <div className="flex justify-center">
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
           {categories
-            .filter((cat) => cat.parentCategory === null)
-            .map((cat) => {
-              const Icon =
-                cat.iconKey && categoryIcons[cat.iconKey]
-                  ? categoryIcons[cat.iconKey]
-                  : null;
-
+            .filter((cat: Category) => cat.parentCategory === null)
+            .map((cat: Category) => {
+              const Icon = cat.iconKey ? categoryIcons[cat.iconKey] : null;
               return (
                 <motion.div
                   key={cat._id}
                   whileHover={{ scale: 1.05 }}
                   className="cursor-pointer"
-                  onClick={() => router.push(`/categories/${cat._id}`)} // ← الانتقال
+                  onClick={() => goToCategory(cat._id)}
                 >
                   <Card
                     className="h-40 w-65 flex items-center justify-center text-center relative overflow-hidden transition-all duration-300 group"
@@ -50,7 +40,10 @@ export default function CategoriesPage() {
                     <CardContent className="flex flex-col items-center justify-center p-4 w-full h-full">
                       <div className="flex flex-col items-center justify-center h-full transition-opacity duration-300 group-hover:opacity-0">
                         {Icon && <Icon size={30} />}
-                        <Typography variant="h6" className="mt-2 font-semibold text-sm">
+                        <Typography
+                          variant="h6"
+                          className="mt-2 font-semibold text-sm"
+                        >
                           {cat.name}
                         </Typography>
                       </div>
@@ -59,7 +52,7 @@ export default function CategoriesPage() {
                           variant="body2"
                           className="text-white text-center text-xl"
                         >
-                          {cat.description || "No description available"}
+                          {cat.description || "No description avaislable"}
                         </Typography>
                       </div>
                     </CardContent>

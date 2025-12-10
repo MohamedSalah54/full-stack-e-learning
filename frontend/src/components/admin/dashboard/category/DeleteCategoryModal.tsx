@@ -1,7 +1,6 @@
 "use client";
+import { useDeleteCategoryLogic } from "@/hooks/categories/useDeleteCategoryLogic";
 import { Dialog } from "@headlessui/react";
-import { useCategoryStore } from "@/zustand/store/category";
-import { toast } from "react-toastify";
 
 export default function DeleteCategoryModal({
   isOpen,
@@ -12,17 +11,7 @@ export default function DeleteCategoryModal({
   onClose: () => void;
   categoryId: string;
 }) {
-  const { removeCategory } = useCategoryStore();
-
-  const handleDelete = async () => {
-    try {
-      await removeCategory(categoryId);
-      onClose();
-      toast.success("Category has been deleted!");
-    } catch (error) {
-      toast.error("Something went wrong!");
-    }
-  };
+  const { handleDelete } = useDeleteCategoryLogic(onClose, categoryId);
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">

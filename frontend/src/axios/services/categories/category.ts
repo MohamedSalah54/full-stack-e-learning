@@ -1,7 +1,13 @@
 import API from "../../API/api";
 
-export const createCategory = (data: { name: string; description?: string , parentCategory: string}) =>
+export const createCategory = (data: { 
+  name: string; 
+  description?: string;
+  parentCategory?: string;
+  iconKey?: string;
+}) =>
   API.post("/categories/create", data);
+
 
 export const getAllCategories = () =>
   API.get("/categories");

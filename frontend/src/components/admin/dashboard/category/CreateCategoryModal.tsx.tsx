@@ -1,42 +1,21 @@
 "use client";
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
 import { useCategoryStore } from "@/zustand/store/category";
-import { toast } from "react-toastify";
 import { categoryIcons, IconKey } from "@/constants/icons";
+import { useCreateCategoryLogic } from "@/hooks/categories/useCreateCategoryLogic";
 
+interface CreateCategoryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 export default function CreateCategoryModal({
   isOpen,
   onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const { addCategory, categories } = useCategoryStore();
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    parentCategory: "",
-    iconKey: "code" as IconKey, // Default icon
-  });
+}: CreateCategoryModalProps) {
+  const { categories } = useCategoryStore();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    try {
-      e.preventDefault();
-
-      await addCategory({
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        parentCategory: formData.parentCategory || undefined,
-        iconKey: formData.iconKey,
-      });
-
-      onClose();
-      toast.success("Category added successfully!");
-    } catch (error) {
-      toast.error("Something went wrong!");
-    }
-  };
+  const { formData, setFormData, handleSubmit } =
+    useCreateCategoryLogic(onClose);
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -46,6 +25,7 @@ export default function CreateCategoryModal({
           <Dialog.Title className="text-lg font-bold mb-4">
             Add Category
           </Dialog.Title>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
@@ -67,7 +47,6 @@ export default function CreateCategoryModal({
               className="w-full border rounded-lg px-3 py-2"
             />
 
-            {/* اختيار أيقونة */}
             <div>
               <p className="mb-2 font-semibold">Choose an icon:</p>
               <div className="grid grid-cols-4 gap-2">
@@ -93,7 +72,10 @@ export default function CreateCategoryModal({
             <select
               value={formData.parentCategory}
               onChange={(e) =>
-                setFormData({ ...formData, parentCategory: e.target.value })
+                setFormData({
+                  ...formData,
+                  parentCategory: e.target.value,
+                })
               }
               className="w-full border rounded-lg px-3 py-2"
             >

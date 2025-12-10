@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import FooterWrapper from "@/components/common/wrapper/FooterWrapper";
 import NavbarWrapper from "@/components/common/wrapper/NavbarWrapper";
 import { Providers } from "./providers";
+import ScrollToTopButton from "../components/common/ScrollToTopButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <Providers>
           <NavbarWrapper />
           {children}
+          <ScrollToTopButton />
           <ToastContainer position="top-left" autoClose={3000} />
           <FooterWrapper />
         </Providers>

@@ -1,22 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useCategoryStore } from "@/zustand/store/category";
 import { Card, CardContent, Typography } from "@mui/material";
-import { categoryIcons } from "@/constants/icons";
 import { motion } from "framer-motion";
+import { categoryIcons } from "@/constants/icons";
+import { useSubCategoriesLogic } from "@/hooks/categories/useSubCategoriesLogic";
+import { Category } from "@/types/category";
 
 export default function SubCategoriesPage() {
-  const router = useRouter();
-  const { id } = useParams();
-  const { categories, fetchCategories } = useCategoryStore();
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
-  const subCategories = categories.filter((cat) => cat.parentCategory === id);
+  const { subCategories, goToCourses } = useSubCategoriesLogic();
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-12">
@@ -30,18 +21,14 @@ export default function SubCategoriesPage() {
 
       <div className="flex justify-center">
         <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-          {subCategories.map((cat) => {
-            const Icon =
-              cat.iconKey && categoryIcons[cat.iconKey]
-                ? categoryIcons[cat.iconKey]
-                : null;
-
+          {subCategories.map((cat: Category) => {
+            const Icon = cat.iconKey ? categoryIcons[cat.iconKey] : null;
             return (
               <motion.div
                 key={cat._id}
                 whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => router.push(`/categories/${cat._id}/coursesOfTrack`)}
+                onClick={() => goToCourses(cat._id)}
               >
                 <Card
                   className="h-40 w-65 flex items-center justify-center text-center relative overflow-hidden transition-all duration-300 group"
