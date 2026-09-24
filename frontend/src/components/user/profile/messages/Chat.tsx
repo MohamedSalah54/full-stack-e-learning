@@ -1,4 +1,3 @@
-// components/Chat.tsx
 "use client";
 import { Paperclip, Search } from "lucide-react";
 import React, { useState } from "react";

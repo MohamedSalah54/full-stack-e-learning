@@ -30,7 +30,7 @@ export const uploadImage = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await API.post("/upload/image", formData, {
+  const response = await API.post("/upload/profile", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -38,5 +38,7 @@ export const uploadImage = async (file: File) => {
 
   return response.data; 
 };
+
+
 
 

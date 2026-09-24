@@ -1,4 +1,3 @@
-// image.controller.ts
 import {
   Controller,
   Post,
@@ -13,9 +12,19 @@ import { CloudService } from './cloudinary';
 export class ImageController {
   constructor(private readonly cloudService: CloudService) {}
 
-  @Post('image')
+  @Post('profile')
   @UseInterceptors(FileInterceptor('file', multerOptions(['image/jpeg', 'image/png'])))
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadProfile(@UploadedFile() file: Express.Multer.File) {
+    const { public_id, secure_url } = await this.cloudService.uploadFile({
+      path: file.path,
+      folder: 'profile',
+    });
+    return { public_id, secure_url };
+  }
+
+  @Post('course')
+  @UseInterceptors(FileInterceptor('file', multerOptions(['image/jpeg', 'image/png'])))
+  async uploadCourse(@UploadedFile() file: Express.Multer.File) {
     const { public_id, secure_url } = await this.cloudService.uploadFile({
       path: file.path,
       folder: 'courses',
@@ -23,3 +32,4 @@ export class ImageController {
     return { public_id, secure_url };
   }
 }
+

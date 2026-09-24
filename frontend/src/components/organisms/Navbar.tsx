@@ -12,6 +12,7 @@ import { logo } from "@/assets";
 import { Search } from "lucide-react";
 import { links } from "@/constants";
 import Link from "next/link";
+import { useGetMe } from "@/query/auth/useGetMe";
 
 export default function Navbar() {
   const [active, setActive] = useState("Home");
@@ -24,6 +25,13 @@ export default function Navbar() {
 
   const visibility = useRef<HTMLInputElement | null>(null);
 
+    const { data: user, isLoading } = useGetMe();
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.push("/auth/login");
+    toast.success("Logged out successfully");
+  };
   useEffect(() => {
     if (showSearch && visibility.current) {
       visibility.current.focus();
@@ -43,10 +51,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const user = useAuthStore((state) => state.user);
 
-  const setUser = useAuthStore((state) => state.setUser);
-  const getMe = useAuthStore((state) => state.getMe);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,12 +60,7 @@ export default function Navbar() {
     }
   }, [user]);
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token && !user) {
-      getMe();
-    }
-  }, [getMe, user]);
+
 
   useEffect(() => {
     const handleClickOutside = (e: any) => {
@@ -72,12 +72,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    Cookies.remove("token");
-    setUser(null);
-    router.push("/auth/login");
-    toast.success("Logged out successfully");
-  };
+
 
   return (
     <>
@@ -171,64 +166,65 @@ export default function Navbar() {
               </button>
             )}
 
-            {user ? (
-              <div className="relative" ref={visibility}>
-                <div
-                  className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-black font-semibold text-sm cursor-pointer hover:opacity-90 transition"
-                  onClick={() => setDropdownOpen((prev) => !prev)}
-                >
-                  {user?.profilePicture?.secure_url ? (
-                    <Image
-                      src={user.profilePicture.secure_url}
-                      fill
-                      alt="Avatar"
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <span className="text-black text-base font-bold leading-none">
-                      {user.firstName
-                        ? user.firstName.charAt(0).toUpperCase()
-                        : "?"}
-                    </span>
-                  )}
-                </div>
+      {isLoading ? null : user ? (
+  <div className="relative" ref={visibility}>
+    <div
+      className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-black font-semibold text-sm cursor-pointer hover:opacity-90 transition"
+      onClick={() => setDropdownOpen((prev) => !prev)}
+    >
+      {user?.profilePicture?.secure_url ? (
+        <Image
+          src={user.profilePicture.secure_url}
+          fill
+          alt="Avatar"
+          className="w-full h-full object-cover rounded-full"
+        />
+      ) : (
+        <span className="text-black text-base font-bold leading-none">
+          {user.firstName
+            ? user.firstName.charAt(0).toUpperCase()
+            : "?"}
+        </span>
+      )}
+    </div>
 
-                {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-2 z-50">
-                    <button
-                      onClick={() => {
-                        router.push("/profile");
-                        setDropdownOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Profile
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <button
-                  className="hidden md:block px-4 py-1 border border-gray-800 text-gray-800 rounded-md hover:bg-gray-100 transition cursor-pointer"
-                  onClick={() => router.push("/auth/login")}
-                >
-                  Login
-                </button>
-                <button
-                  className="hidden md:block px-4 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition cursor-pointer"
-                  onClick={() => router.push("/auth/register")}
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
+    {dropdownOpen && (
+      <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-2 z-50">
+        <button
+          onClick={() => {
+            router.push("/profile");
+            setDropdownOpen(false);
+          }}
+          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Profile
+        </button>
+        <button
+          onClick={handleLogout}
+          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+        >
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
+) : (
+  <>
+    <button
+      className="hidden md:block px-4 py-1 border border-gray-800 text-gray-800 rounded-md hover:bg-gray-100 transition cursor-pointer"
+      onClick={() => router.push("/auth/login")}
+    >
+      Login
+    </button>
+    <button
+      className="hidden md:block px-4 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition cursor-pointer"
+      onClick={() => router.push("/auth/register")}
+    >
+      Sign Up
+    </button>
+  </>
+)}
+
           </div>
         </div>
       </nav>

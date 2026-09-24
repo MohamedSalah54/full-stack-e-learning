@@ -7,13 +7,14 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((config) => {
-    const token = Cookies.get("token")
-    if (token) {
-      config.headers.Authorization = token; 
-    }
-  
+  const token = Cookies.get("token");
+
+  if (token) {
+    config.headers.Authorization = token;
+  }
 
   return config;
 });
+
 
 export default API;

@@ -12,16 +12,18 @@ import { Dock } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useEnrollmentStore } from "@/zustand/store/enrollment";
 import { useEffect } from "react";
+import { useProfileLogic } from "@/hooks/profile/useProfileLogic";
 
 export default function ImageWithLinks() {
   const { enrollments, getCourseEnrollmentsCount } = useEnrollmentStore();
-  const {
-    user,
-    profileImage,
-    fileInputRef,
-    handleEditClick,
-    handleImageUpload,
-  } = useProfile();
+const {
+  user,
+  profileImage,
+  fileInputRef,
+  handleEditClick,
+  handleImageUpload,
+} = useProfileLogic();
+
 
   useEffect(() => {
     if (user?.id) {

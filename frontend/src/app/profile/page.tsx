@@ -1,25 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAuthStore } from "@/zustand/store/authStore";
 import Loader from "@/components/common/Loader";
 import NavUser from "@/components/user/profile/fixed/NavUser";
 import ImageWithLinks from "@/components/user/profile/fixed/ImageWithLinks";
+import { useProfileLogic } from "@/hooks/profile/useProfileLogic";
 
 export default function ProfilePage() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const user = useAuthStore((state) => state.user);
+  const { loading, user } = useProfileLogic();
 
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
         <Loader loading={loading} />
       </div>
+
       {!loading &&
         (user?.role === "student" ? (
           <>
@@ -31,11 +25,8 @@ export default function ProfilePage() {
             </div>
           </>
         ) : (
-          <>
-            <div>nothing</div>
-          </>
+          <div>nothing</div>
         ))}
     </>
-    
   );
 }

@@ -1,4 +1,4 @@
-import Chat from "@/components/profile/messages/Chat";
+import Chat from "@/components/user/profile/messages/Chat";
 
 const page = () => {
   return (
